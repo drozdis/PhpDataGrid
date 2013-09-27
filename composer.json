@@ -1,9 +1,9 @@
 {
     "name": "widget/widget",
+    "version" : "0.8",
     "type": "library",
     "description": "Widgets for PHP",
     "keywords": ["templating"],
-    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Drozd Igor",
@@ -14,13 +14,14 @@
         "php": ">=5.2.4"
     },
     "autoload": {
-        "psr-0" : {
-            "Widget_" : "lib/"
+        "psr-0": {
+            "Widget_": "lib/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.13-dev"
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/drozdis/widget.git"
         }
-    }
+    ]
 }
