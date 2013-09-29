@@ -1,6 +1,6 @@
 {
-    "name": "widget/widget",
-    "version" : "0.8",
+    "name": "widget/php-widget",
+    "version" : "1.0.0",
     "type": "library",
     "description": "Widgets for PHP",
     "keywords": ["templating"],
@@ -17,11 +17,5 @@
         "psr-0": {
             "Widget_": "lib/"
         }
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/drozdis/widget.git"
-        }
-    ]
+    }    
 }
