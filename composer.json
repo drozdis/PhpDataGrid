@@ -1,5 +1,5 @@
 {
-    "name": "drozd/PhpDataGrid",
+    "name": "drozd/widget",
     "version": "0.8",
     "type": "library",
     "description": "Grid widget for PHP",
