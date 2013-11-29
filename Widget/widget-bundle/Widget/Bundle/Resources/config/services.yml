@@ -1,0 +1,5 @@
+services:
+    widget_bundle.grid_type_extension:
+        class: Widget\Bundle\Form\Type\GridType
+        tags:
+        - { name: form.type, alias: grid }

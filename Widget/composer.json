@@ -1,0 +1,22 @@
+{
+    "name": "drozd/PhpDataGrid",
+    "version": "0.8",
+    "type": "library",
+    "description": "Grid widget for PHP",
+    "keywords": ["templating"],
+    "authors": [
+        {
+            "name": "Drozd Igor",
+            "email": "drozd.igor@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Widget_": "lib/",
+            "Widget\\Bundle" : "widget-bundle"
+        }
+    }
+}
