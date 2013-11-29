@@ -4,7 +4,6 @@ namespace Widget\Grid\State;
 /**
  * Клас "Сохранение состояния в сессии"
  *
- * @package Widget\Grid\State
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class SessionAdapter extends AbstractAdapter
@@ -19,7 +18,10 @@ class SessionAdapter extends AbstractAdapter
      */
     protected function init()
     {
-        $this->store = & $_SESSION[$this->getName()];
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $this->store = &$_SESSION[$this->getName()];
     }
 
     /**

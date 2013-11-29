@@ -9,23 +9,18 @@ namespace Widget\Grid\Column;
 class Button extends Column
 {
     /**
-     * Обрабочик кнопки
+     * Javascript handler
+     *
      * @var string
      */
-    protected $handler = '';
+    private $handler = '';
 
     /**
+     * Icon
+     *
      * @var string
      */
-    protected $type = 'primary';
-
-    /**
-     * @return string
-     */
-    public function getHandler()
-    {
-        return $this->handler;
-    }
+    private $type = 'primary';
 
     /**
      * @param string $handler
@@ -37,14 +32,6 @@ class Button extends Column
         $this->handler = $handler;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

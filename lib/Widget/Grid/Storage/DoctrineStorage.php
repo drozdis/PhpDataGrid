@@ -41,13 +41,25 @@ class DoctrineStorage extends AbstractStorage
     /**
      * @return \Doctrine\ORM\QueryBuilder|null
      */
-    protected function getQueryBuilder()
+    public function getQueryBuilder()
     {
         if ($this->queryBuilder == null) {
-            $this->queryBuilder = $this->getRepository()->createQueryBuilder('e');
+            $this->setQueryBuilder($this->getRepository()->createQueryBuilder('e'));
         }
 
         return $this->queryBuilder;
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     *
+     * @return $this
+     */
+    public function setQueryBuilder(\Doctrine\ORM\QueryBuilder $queryBuilder)
+    {
+        $this->queryBuilder = $queryBuilder;
+
+        return $this;
     }
 
     /**
@@ -72,17 +84,17 @@ class DoctrineStorage extends AbstractStorage
 
         //limit
         if ($limit) {
-            $query->setMaxResults( $limit );
+            $query->setMaxResults($limit);
         } else {
             $query->setFirstResult(($this->getPage() - 1) * $this->getOnPage());
             $query->setMaxResults($this->getOnPage());
         }
 
         //get data
-        $rows =  $query->getQuery()->getResult();
+        $rows = $query->getQuery()->getResult();
 
         //set data
-        $this -> setData($rows);
+        $this->setData($rows);
 
         //fire after_load event
         $this->fireEvent('after_load', array('storage' => $this, 'data' => $rows));
@@ -96,9 +108,7 @@ class DoctrineStorage extends AbstractStorage
     public function order()
     {
         foreach ($this->orders as $name => $dir) {
-            $arr = explode('.', $name);
-            $clearName = array_pop($arr);
-            $method = '_order' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($clearName));
+            $method = 'orderBy' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($name));
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $dir);
             } else {
@@ -115,7 +125,7 @@ class DoctrineStorage extends AbstractStorage
     public function filter()
     {
         foreach ($this->filters as $filter) {
-            $method = '_filter' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($filter['name']));
+            $method = 'filter' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($filter['name']));
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $filter['value']);
             } else {
@@ -175,7 +185,7 @@ class DoctrineStorage extends AbstractStorage
         $var = 'f' . ($i++);
         $operation = str_replace('?', ':' . $var, $operation);
 
-        $queryBuilder->andWhere($field . ' ' . $operation );
+        $queryBuilder->andWhere($field . ' ' . $operation);
         $queryBuilder->setParameter($var, $data);
 
         return $this;

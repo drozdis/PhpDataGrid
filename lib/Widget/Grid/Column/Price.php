@@ -2,7 +2,7 @@
 namespace Widget\Grid\Column;
 
 /**
- * Колонка цена
+ * Format price
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */

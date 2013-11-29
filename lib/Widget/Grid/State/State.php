@@ -48,9 +48,9 @@ class State
         );
         if ($this->getUserId()) {
             $class = self::getDefaultStateAdapter();
-            $this->adapter = new $class($adapterOptions);
+            $this->adapter = new $class($this->grid->getName(),$adapterOptions);
         } else {
-            $this->adapter = new SessionAdapter($adapterOptions);
+            $this->adapter = new SessionAdapter($this->grid->getName(), $adapterOptions);
         }
     }
 

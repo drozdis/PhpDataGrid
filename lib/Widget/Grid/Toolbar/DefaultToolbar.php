@@ -11,10 +11,8 @@ class DefaultToolbar extends Toolbar
     /**
      * {@inheritdoc}
      */
-    protected function init()
+    public function render()
     {
-        parent::init();
-
         $buttons = false;
         $columns = $this->getGrid()->getColumns();
         foreach ($columns as $column) {
@@ -25,11 +23,21 @@ class DefaultToolbar extends Toolbar
         }
 
         if ($buttons) {
-            $button = new Button(array('title' => 'Фильтровать', 'hint' => 'Применить фильтры', 'callback' => $this->getGrid()->getJavascriptObject() . '.doFilter(); return false;', 'icon' => 'filter'));
+            $button = new Button();
+            $button->setTitle('Filter');
+            $button->setHint('Apply filter');
+            $button->setCallback($this->getGrid()->getJavascriptObject() . '.doFilter(); return false;');
+            $button->setIcon('filter');
             $this->addButton($button);
 
-            $button = new Button(array('title' => 'Сбросить', 'hint' => 'Сбросить фильтры', 'callback' => $this->getGrid()->getJavascriptObject() . '.load(\'' . $this->getGrid()->getUrl(array('filter' => false)) . '\'); return false;', 'icon' => 'retweet'));
+            $button = new Button();
+            $button->setTitle('Reset');
+            $button->setHint('Reset filters');
+            $button->setCallback($this->getGrid()->getJavascriptObject() . '.load(\'' . $this->getGrid()->getUrl(array('filter' => false)) . '\'); return false;');
+            $button->setIcon('retweet');
             $this->addButton($button);
         }
+
+        return parent::render();
     }
 }

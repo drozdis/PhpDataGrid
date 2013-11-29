@@ -17,6 +17,7 @@ class Columns extends AbstractExtension
             $button = new Button();
             $button->setHint('Настройка колонок таблицы');
             $button->setIcon('th-list');
+            $button->setCallback("$('#grid-extension-columns').modal()");
             $toolbar->addButton($button);
 
             $this->getWidget()->addDecorator(new ColumnsDecorator());

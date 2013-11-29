@@ -41,7 +41,7 @@ class ColumnsDecorator extends AbstractDecorator
                 }
             </script>
 
-            <div id="grid-extension-columns" class="modal hide" style="display: none; width:730px;" aria-hidden="true">
+            <div id="grid-extension-columns" class="modal" style="display: none; width:730px;" aria-hidden="true">
                 <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h3 class="pull-left">Настройка таблицы</h3>

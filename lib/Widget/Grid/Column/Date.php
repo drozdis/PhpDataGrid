@@ -39,11 +39,13 @@ class Date extends Column
     protected function value($row)
     {
         $value = parent::value($row);
-        if (!is_object($value)) {
-            $value = new \DateTime($value);
-        }
-        if ($value) {
-            return $value -> format($this->getFormat());
+        if (!empty($value)) {
+            if (!is_object($value)) {
+                $value = new \DateTime($value);
+            }
+            if ($value) {
+                return $value -> format($this->getFormat());
+            }
         }
 
         return '';

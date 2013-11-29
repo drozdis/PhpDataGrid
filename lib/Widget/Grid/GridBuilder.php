@@ -1,54 +1,35 @@
 <?php
 namespace Widget\Grid;
 
-use Widget\Grid\Grid;
-use Widget\Grid\Column\ColumnBuilder;
-use Widget\Grid\Storage\StorageBuilder;
+use Widget\AbstractExtension;
+use Widget\Grid\Column\Column;
+use Widget\Grid\Column\ColumnFactory;
+use Widget\Grid\Extension\ExtensionFactory;
+use Widget\Grid\Filter\AbstractFilter;
+use Widget\Grid\Filter\FilterFactory;
+use Widget\Grid\Storage\AbstractStorage;
+use Widget\Grid\Storage\StorageFactory;
+use Widget\Grid\Toolbar\Toolbar;
 use Widget\Grid\Toolbar\ToolbarBuilder;
+use Widget\Grid\Toolbar\ToolbarFactory;
 
 /**
  * Builder class for grid
  */
 class GridBuilder
 {
-    const ACTION_CLASS = '\Widget\Grid\Action\Action';
-
-    const GRID_CLASS = '\Widget\Grid\Grid';
-
     /**
      * @var Grid
      */
-    protected $grid;
+    private $grid;
 
     /**
-     * @var array
+     * @param Grid  $grid
+     * @param array $options
      */
-    protected $options = array();
-
-    /**
-     * @param Grid|string $type
-     * @param array       $options
-     */
-    public function __construct($type = self::GRID_CLASS, $options = array())
+    public function __construct(Grid $grid)
     {
-        $this->options = $options;
-
-        if (is_object($type)) {
-            $this->grid = $type;
-        } elseif (is_string($type)) {
-            if (class_exists($type)) {
-                $class = $type;
-            } elseif (class_exists('\Widget\Grid\\' . ucfirst($type))) {
-                $class = '\Widget\Grid\\' . ucfirst($type);
-            } else {
-                throw new \Exception('Unknown class ' . $type);
-            }
-            $this->grid = new $class();
-        } else {
-            throw new \Exception('Unknown configuration');
-        }
-
-        \Widget\Helper::setConstructorOptions($this->grid, $options);
+        $this->grid = $grid;
     }
 
     /**
@@ -60,16 +41,24 @@ class GridBuilder
     }
 
     /**
-     * @param \Widget\Grid\Storage\AbstractStorage|string $type
-     * @param array                                       $options
+     * @param AbstractStorage |string $type
+     * @param array                   $options
+     *
+     * @return AbstractStorage
      */
     public function setStorage($type, $options = array())
     {
-        //create storage builder
-        $builder = new StorageBuilder($type, $options);
+        if (!$type instanceof AbstractStorage) {
+            $type = StorageFactory::create($type);
+        }
 
-        //add to grid
-        $this->grid->setStorage($builder->getStorage());
+        //set options
+        \Widget\Helper::setConstructorOptions($type, $options);
+
+        //set store
+        $this->grid->setStorage($type);
+
+        return $type;
     }
 
     /**
@@ -77,16 +66,39 @@ class GridBuilder
      * @param string $type
      * @param array  $options
      *
-     * @return ColumnBuilder
+     * @return Column
      */
     public function addColumn($name, $type = 'column', $options = array())
     {
-        $builder = new ColumnBuilder($type, $options);
+        if (!$type instanceof Column) {
+            $type = ColumnFactory::create($type);
+        }
+
+        //set options
+        \Widget\Helper::setConstructorOptions($type, $options);
 
         //add to grid
-        $this->grid->addColumn($name, $builder->getColumn());
+        $this->grid->addColumn($name, $type);
 
-        return $builder;
+        return $type;
+    }
+
+    /**
+     * @param AbstractFilter|string $type
+     * @param array                 $options
+     *
+     * @return AbstractFilter
+     */
+    public function createFilter($type, $options = array())
+    {
+        if (!$type instanceof AbstractFilter) {
+            $type = FilterFactory::create($type);
+        }
+
+        //set options
+        \Widget\Helper::setConstructorOptions($type, $options);
+
+        return $type;
     }
 
     /**
@@ -95,15 +107,16 @@ class GridBuilder
      *
      * @return ToolbarBuilder
      */
-    public function setTopToolbar($type, $options = array())
+    public function setTopToolbar($type = 'toolbar', $options = array())
     {
-        $builder = new ToolbarBuilder($type, $options);
-        $toolbar = $builder->getToolbar();
+        if (!$type instanceof Toolbar) {
+            $type = ToolbarFactory::create($type);
+        }
 
-        //add to grid
-        $this->grid->setTopToolbar($toolbar);
+        //set options
+        \Widget\Helper::setConstructorOptions($type, $options);
 
-        return $builder;
+        $this->getGrid()->setTopToolbar($type);
     }
 
     /**
@@ -112,15 +125,16 @@ class GridBuilder
      *
      * @return ToolbarBuilder
      */
-    public function setBottomToolbar($type, $options = array())
+    public function setBottomToolbar($type = 'toolbar', $options = array())
     {
-        $builder = new ToolbarBuilder($type, $options);
-        $toolbar = $builder->getToolbar();
+        if (!$type instanceof Toolbar) {
+            $type = ToolbarFactory::create($type);
+        }
 
-        //add to grid
-        $this->grid->setBottomToolbar($toolbar);
+        //set options
+        \Widget\Helper::setConstructorOptions($type, $options);
 
-        return $builder;
+        $this->getGrid()->setBottomToolbar($type);
     }
 
     /**
@@ -131,8 +145,7 @@ class GridBuilder
      */
     public function addAction($name, $options = array())
     {
-        $class = self::ACTION_CLASS;
-        $action = new $class();
+        $action = new Action\Action();
 
         //apply options
         \Widget\Helper::setConstructorOptions($action, $options);
@@ -142,37 +155,28 @@ class GridBuilder
 
         //add to grid
         $this->grid->addAction($name, $action);
+
+        return $this;
     }
 
     /**
-     * @param \Widget\AbstractExtension|string $type
-     * @param array                            $options
-     *
-     * @return object
-     * @throws \Exception
+     * @param AbstractExtension|string $type
+     * @param array                    $options
      *
      * @return GridBuilder
      */
     public function addExtension($type, $options = array())
     {
-        if (is_object($type)) {
-            $extension = $type;
-        } elseif (is_string($type)) {
-            if (class_exists($type)) {
-                $class = $type;
-            } elseif (class_exists('\Widget\Grid\Extension\\' . ucfirst($type))) {
-                $class = '\Widget\Grid\Extension\\' . ucfirst($type);
-            } else {
-                throw new \Exception('Unknown class ' . $type);
-            }
-            $extension = new $class();
-        } else {
-            throw new \Exception('Unknown configuration');
+        if (!$type instanceof AbstractExtension) {
+            $type = ExtensionFactory::create($type);
         }
 
-        \Widget\Helper::setConstructorOptions($extension, $options);
+        //set options
+        $type->setOptions($options);
 
         //add to grid
-        $this->grid->addExtension($extension);
+        $this->grid->addExtension($type);
+
+        return $this;
     }
 }

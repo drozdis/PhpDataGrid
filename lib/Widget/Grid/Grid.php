@@ -1,5 +1,6 @@
 <?php
 namespace Widget\Grid;
+
 use Widget\AbstractWidget;
 use Widget\Grid\Action\Action;
 use Widget\Grid\Column\Column;
@@ -66,11 +67,17 @@ class Grid extends AbstractWidget
     /**
      * Delimeter in url
      * Available ? /
+     *
      * @example ? controller/?order=eyJtZW51X2lkIjoiZGVzYyJ9
      *          / controller/order/eyJtZW51X2lkIjoiZGVzYyJ9/
      * @var string
      */
     protected $uriDelimeter = '&';
+
+    /**
+     * @var bool
+     */
+    protected $allowMultipleOrdering = false;
 
     /**
      * @var Toolbar\Toolbar
@@ -91,6 +98,7 @@ class Grid extends AbstractWidget
     /**
      * Параметры, которые передаються в грид и участвуют в УРЛ
      * Для каждой пары ключ/значения вызываеться метод set
+     *
      * @var array
      */
     protected $params = array();
@@ -133,9 +141,6 @@ class Grid extends AbstractWidget
         //доп. данные
         $this->setParams($this->getUrlParams('params', true));
 
-        //инициализация состояния таблицы
-        $this->applyState();
-
         //параметры
         $this->initGrid();
     }
@@ -167,11 +172,12 @@ class Grid extends AbstractWidget
     {
         $params = $this->getUrlParams();
         $state = $this->getState()->getState();
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $this->isSaveState()) {
+        if ($this->isSaveState()) {
             if (empty($params['order']) && empty($params['filter'])) {
-                if (!empty($state['filters']) && $this->getFilters()) {
+                if (!empty($state['filters']) && $this->getStorage()) {
                     $this->applyFilter($state['filters']);
                 }
+
                 if (!empty($state['orders']) && $storage = $this->getStorage()) {
                     $this->applyOrder($state['orders']);
                 }
@@ -321,6 +327,9 @@ class Grid extends AbstractWidget
             $this->applyFilter($filter);
         }
 
+        //инициализация состояния таблицы
+        $this->applyState();
+
         return $this;
     }
 
@@ -334,7 +343,15 @@ class Grid extends AbstractWidget
     {
         $grid = $this;
         $listener = new ObserverListener(function ($storage) use ($order, $grid) {
+            /* @var $storage AbstractStorage */
+
             foreach ($order as $name => &$dir) {
+
+                //clear order before add new ordering if not allowed multisorting
+                if (!$grid->isAllowMultipleOrdering()) {
+                    $storage->setOrders(array());
+                }
+
                 $column = $grid->getColumnByField($name);
                 if (!empty($column) && $column->isHidden() == false && $column->isSortable()) {
                     $storage->addOrder($column->getField(), $dir);
@@ -355,7 +372,6 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ?????? ?????, ???? ?????? ??? ??????
      * @param \Widget\Grid\Toolbar\Toolbar $toolbar
      *
      * @return Grid
@@ -552,7 +568,6 @@ class Grid extends AbstractWidget
      */
     public function initialHtml()
     {
-        //???????????? ??????? ???????? ????????
         $this->reorderColumns();
 
         $rendered = array(
@@ -584,15 +599,12 @@ class Grid extends AbstractWidget
             'autoLoad' => $this->isAutoLoad(),
             'uriDelimeter' => $this->uriDelimeter
         ));
-        $js =
-            'if (!'.$this->getJavascriptObject().') {
-                 var ' . $this->getJavascriptObject().';
-                 $(function () {
-                    if (typeof(' . $this->getJavascriptObject() . ') == "undefined") {
-                        ' . $this->getJavascriptObject() . ' = new Widget.Grid(' . $json . ');
-                    }' . '
-                 });
-             }';
+        $js = 'var ' . $this->getJavascriptObject() . ';
+             $(function () {
+                if (typeof(' . $this->getJavascriptObject() . ') == "undefined") {
+                    ' . $this->getJavascriptObject() . ' = new Widget.Grid(' . $json . ');
+                }' . '
+             });';
         $this->getResourceManager()->addJavascript($js);
 
         //remove unused places
@@ -603,11 +615,11 @@ class Grid extends AbstractWidget
 
     /**
      * Reorder columns by position ($column->getPosition())
+     *
      * @return Grid
      */
     public function reorderColumns()
     {
-        //?????????? ???????
         $positions = false;
         foreach ($this->getColumns() as $column) {
             $positions = $positions || $column->getPosition() > 0;
@@ -626,14 +638,15 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ??????????? ????? ??????
+     * Render grid header
+     *
      * @return Grid
      */
     protected function renderHeader()
     {
         $html = '<colgroup>';
         if ($this->selection !== false) {
-            $html .= '<col width="20" class="a-center" />';
+            $html .= '<col width="20" />';
         }
         foreach ($this->columns as &$column) {
             $class = '';
@@ -645,7 +658,7 @@ class Grid extends AbstractWidget
 
         //??????? ????????
         if (!empty($this->actions)) {
-            $html .= '<col style="width: 50px;" class="a-center" />';
+            $html .= '<col style="width: ' . (count($this->actions) * 30) . 'px;" />';
         }
         $html .= '</colgroup>';
 
@@ -668,12 +681,12 @@ class Grid extends AbstractWidget
                 }
                 $html .= '<div class="sort-block ' . $class . '">
                             <div class="s-sort-wrap">
-                                <a rel="nofollow" data-role="tooltip" title="' . $column->getHint() . '" class="s-sort" href="' . $this->url(array('order' => array($name => 'add'))) . '" onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;">' . $column->getTitle() . '<span></span></a>
+                                <a rel="nofollow" data-toggle="tooltip" title="' . $column->getHint() . '" class="s-sort" href="' . $this->url(array('order' => array($name => 'add'))) . '" onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;">' . $column->getTitle() . '<span></span></a>
                             </div>
-                            ' . ($class !== 'not-sort' ? '<a rel="nofollow" href="' . $this->url(array('order' => array($name => 'remove'))) . '" class="s-close" onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;"></a>' : '') . '
+                            ' . ($class !== 'not-sort' ? '<a rel="nofollow" href="' . $this->url(array('order' => array($name => 'remove'))) . '" ' . ($this->isAllowMultipleOrdering() ? 'class="s-close"' : '') . ' onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;"></a>' : '') . '
                           </div>';
             } else {
-                $html .= '<span data-role="tooltip" title="' . $column->getHint() . '">' . $column->getTitle() . '</span>';
+                $html .= '<span data-toggle="tooltip" title="' . $column->getHint() . '">' . $column->getTitle() . '</span>';
             }
             $html .= '</th>';
         }
@@ -728,7 +741,8 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ????????? ??????
+     * Render body of grid
+     *
      * @return string
      */
     protected function renderBody()
@@ -741,7 +755,7 @@ class Grid extends AbstractWidget
             }
             $html .= $this->renderSummary();
         } else {
-            $html .= '<tr><td colspan="' . (count($this->columns) + 2) . '" style="padding: 10px; text-align: center;">??? ??????</td></tr>';
+            $html .= '<tr><td colspan="' . (count($this->columns) + 2) . '" style="padding: 10px; text-align: center;">&nbsp;</td></tr>';
         }
 
         return $html;
@@ -749,6 +763,7 @@ class Grid extends AbstractWidget
 
     /**
      * Rendering footer of the table
+     *
      * @return string
      */
     protected function renderFooter()
@@ -887,7 +902,6 @@ class Grid extends AbstractWidget
     {
         $url = array();
 
-        //??????????
         $storeOrders = $this->getStorage()->getOrders();
         $orders = array();
         foreach ($storeOrders as $name => $dir) {
@@ -901,6 +915,7 @@ class Grid extends AbstractWidget
             $column = $this->getColumnByField(key($mixer['order']));
             $action = current($mixer['order']);
             $name = $column->getName();
+
             if ($column) {
                 if ($action == 'remove') {
                     unset($orders[$name]);
@@ -912,6 +927,7 @@ class Grid extends AbstractWidget
             }
         }
         !empty($orders) && $url[] = $this->urlValue('order', Helper::url($orders));
+
 
         //??????????
         if (!isset($mixer['filter'])) {
@@ -982,6 +998,26 @@ class Grid extends AbstractWidget
     }
 
     /**
+     * @param boolean $allowMultipleOrdering
+     *
+     * @return $this;
+     */
+    public function setAllowMultipleOrdering($allowMultipleOrdering)
+    {
+        $this->allowMultipleOrdering = $allowMultipleOrdering;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowMultipleOrdering()
+    {
+        return $this->allowMultipleOrdering;
+    }
+
+    /**
      * @return \Widget\Grid\Action\Action[]
      */
     public function getActions()
@@ -1024,7 +1060,7 @@ class Grid extends AbstractWidget
         $idField = $this->getStorage()->getIdField();
         $html = $index % 2 == 0 ? '<tr data-identifier="' . Helper::getValue($row, $idField) . '" class="even">' : '<tr data-identifier="' . Helper::getValue($row, $idField) . '">';
         if ($this->isSelection()) {
-            $html .= '<td class="a-center"><input type="checkbox" name="selected[]" value="' . Helper::getValue($row, $idField) . '" /></td>';
+            $html .= '<td align="center"><input type="checkbox" name="selected[]" value="' . Helper::getValue($row, $idField) . '" /></td>';
         }
 
         //render coulumns
@@ -1039,7 +1075,7 @@ class Grid extends AbstractWidget
                 $actions .= $action->setCurrentRow($row)->render();
             }
             $actions .= '</div>';
-            $html .= '<td class="last">' . $actions . '</td>';
+            $html .= '<td class="last" align="center">' . $actions . '</td>';
         }
 
         $html .= '</tr>';
@@ -1049,6 +1085,7 @@ class Grid extends AbstractWidget
 
     /**
      * Rendering summary of the table
+     *
      * @return string
      */
     protected function renderSummary()
@@ -1070,12 +1107,21 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ???????? ?????????
      * @return array
      */
     public function getParams()
     {
         return $this->params;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getParam($key)
+    {
+        return isset($this->params[$key]) ? $this->params[$key] : null;
     }
 
     /**

@@ -174,8 +174,6 @@ abstract class AbstractWidget extends ObserverAbstract implements RenderInterfac
                 $decorator->setElement($this);
                 $content = $decorator->render($content);
             }
-            $content .= $this->getResourceManager()->render();
-
             //event
             $this->fireEvent('after_render', array('widget' => $this));
         } catch (\Exception $e) {

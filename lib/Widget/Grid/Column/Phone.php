@@ -2,7 +2,7 @@
 namespace Widget\Grid\Column;
 
 /**
- * Колонка телефон
+ * Phone column
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
@@ -11,7 +11,7 @@ class Phone extends Column
     /**
      * @var string
      */
-    protected $format = '(###) ###-##-##';
+    private $format = '(###) ###-##-##';
 
     /**
      * {@inheritdoc}
@@ -22,12 +22,24 @@ class Phone extends Column
     }
 
     /**
+     * @param string $format
+     *
+     * @return $this
+     */
+    public function setFormat($format)
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    /**
      * @param array  $phone
      * @param string $format
      *
      * @return string
      */
-    protected function formatPhone($phone, $format = null)
+    private function formatPhone($phone, $format = null)
     {
         if (empty($phone)) {
             return $phone;

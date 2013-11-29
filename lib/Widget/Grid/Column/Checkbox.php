@@ -27,14 +27,6 @@ class Checkbox extends Column
     protected $disabled = array();
 
     /**
-     * @return string
-     */
-    public function getHandler()
-    {
-        return $this->handler;
-    }
-
-    /**
      * @param string $handler
      *
      * @return Checkbox

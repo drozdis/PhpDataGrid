@@ -85,7 +85,7 @@ class Action extends AbstractWidget
             $arr[0] = rtrim($arr[0], '/') . '/' . $this->getName() . '/' . Helper::getValue($row, $this->getGrid()->getStorage()->getIdField());
             $href = join('?', $arr);
         } else {
-            if (preg_match_all('//{{([\d\w_]+)}}//', $href, $m)) {
+            if (preg_match_all('#{{([\d\w_]+)}}#', $href, $m)) {
                 foreach ($m[1] as $key) {
                     $href = str_replace('{{' . $key . '}}', Helper::getValue($row, $key), $href);
                 }
@@ -176,7 +176,7 @@ class Action extends AbstractWidget
      */
     public function initialHtml()
     {
-        return '<a rel="nofollow" class="btn btn-xs btn-warning" data-role="tooltip" data-placement="top" title="' . $this->getHint() . '" href="' . $this->getHref($this->getCurrentRow()) . '"><i class="glyphicon glyphicon-' . $this->getIcon() . '"></i>'.($this->getTitle() ? ' '.$this->getTitle() : '').'</a>';
+        return '<a rel="nofollow" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="' . $this->getHint() . '" href="' . $this->getHref($this->getCurrentRow()) . '"><i class="glyphicon glyphicon-' . $this->getIcon() . '"></i>'.($this->getTitle() ? ' '.$this->getTitle() : '').'</a>';
     }
 
 }

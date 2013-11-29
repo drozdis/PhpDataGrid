@@ -1,5 +1,10 @@
 services:
-    widget_bundle.grid_type_extension:
-        class: Widget\Bundle\Form\Type\GridType
+    widget_grid_factory:
+        class: Widget\Bundle\Grid\Factory
+        calls:
+            - [setTranslator, [@translator]]
+
+    widget_bundle_twig_extension:
+        class: Widget\Bundle\Twig\RequestExtension
         tags:
-        - { name: form.type, alias: grid }
+            - { name: twig.extension }

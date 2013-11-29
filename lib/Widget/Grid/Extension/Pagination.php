@@ -1,5 +1,6 @@
 <?php
 namespace Widget\Grid\Extension;
+
 use Widget\AbstractExtension;
 use Widget\ObserverListener;
 

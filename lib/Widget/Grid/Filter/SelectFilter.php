@@ -19,16 +19,42 @@ class SelectFilter extends TextFilter
     protected $multiselect = false;
 
     /**
+     * Тип фильтра (integer|string)
+     *
+     * @var string
+     */
+    protected $type = 'integer';
+
+    /**
      * @var bool
      */
     protected $empty = true;
 
     /**
-     * @return Boolean
+     * @var callable
      */
-    public function getMultiselect()
+    protected $generator;
+
+    /**
+     * <code>
+     *   $tehnologyManager = $this->tehnologyManager;
+     *   $generator = function () use ($tehnologyManager) {
+     *       $tehnologies = $tehnologyManager->findAll();
+     *       $options = array();
+     *       foreach ($tehnologies as $tenhology) {
+     *          $options[$tenhology->getId()] = $tenhology->getName();
+     *       }
+     *
+     *       return $options;
+     *   };
+     *   $columnTehnology->setFilter($builder->createFilter('select', array('generator' => $generator)));
+     * </code>
+     *
+     * @param callable $generator
+     */
+    public function setGenerator($generator)
     {
-        return $this->multiselect;
+        $this->generator = $generator;
     }
 
     /**
@@ -68,25 +94,20 @@ class SelectFilter extends TextFilter
     }
 
     /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function render()
     {
         $column = $this->getColumn()->getName();
         $grid = $this->getGrid();
-        $options = $this->getOptions();
 
-        if ($this->getMultiselect()) {
+        if (!empty($this->generator) && is_callable($this->generator)) {
+            $this->options = call_user_func($this->generator, array($this->value));
+        }
+
+        if ($this->multiselect) {
             $html = '<div class="field-100"><div class="multiselect nowrap" style="height:60px;">';
-            foreach ($options as $key => $value) {
+            foreach ($this->options as $key => $value) {
                 $html .= '<label class="checkbox"><input name="' . $column . '[]" onclick="' . $grid->getJavascriptObject() . '.doFilter();" type="checkbox" id="' . $column . $key . '" value="' . $key . '" ' . ($this->getValue() !== null && $this->getValue() !== '' && in_array($key, (array) $this->getValue()) ? 'checked="checked"' : '') . ' /> ' . $value . '</label>';
             }
             $html .= '</div></div>';
@@ -94,7 +115,7 @@ class SelectFilter extends TextFilter
             $html = '<div class="field-100">';
             $html .= '<select class="form-control" name="' . $column . '" onchange="' . $grid->getJavascriptObject() . '.doFilter();">';
             $this->empty && $html .= '<option value=""></option>';
-            foreach ($options as $key => $value) {
+            foreach ($this->options as $key => $value) {
                 $html .= '<option value="' . $key . '" ' . ($this->getValue() !== null && $this->getValue() !== '' && in_array($key, (array) $this->getValue()) ? 'selected="selected"' : '') . '>' . $value . '</option>';
             }
             $html .= '</select>';

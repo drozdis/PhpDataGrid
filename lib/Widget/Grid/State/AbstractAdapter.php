@@ -25,10 +25,12 @@ abstract class AbstractAdapter
     protected $userState = array();
 
     /**
+     * @param       $name
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct($name, $options = array())
     {
+        $this->name = $name;
         $this->init();
     }
 

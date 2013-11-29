@@ -3,8 +3,6 @@ namespace Widget\Grid\Storage;
 
 /**
  * The storage that provide a loading data dynamically from model
- *
- * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class ModelStorage extends AbstractStorage
 {

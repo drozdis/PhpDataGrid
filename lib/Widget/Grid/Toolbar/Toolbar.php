@@ -1,5 +1,6 @@
 <?php
 namespace Widget\Grid\Toolbar;
+
 use Widget\Grid\Grid;
 use Widget\RenderInterface;
 
@@ -38,12 +39,12 @@ class Toolbar implements RenderInterface
         $count = $this->getGrid()->getStorage()->getCount();
         $html = '<div class="grid-toolbar clearfix">';
         $html .= '<div class="pull-left paginator">';
-        $html .= '<button data-role="tooltip" title="Обновить" id="refresh" onclick="' . $this->getGrid()->getJavascriptObject() . '.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="icon-refresh icon-white"></i></button>';
+        $html .= '<button data-toggle="tooltip" title="Обновить" id="refresh" onclick="' . $this->getGrid()->getJavascriptObject() . '.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="icon-refresh icon-white"></i></button>';
         $html .= '<div id="number-in-page" class="pull-left">';
         if ($this->getGrid()->isSelection()) {
             $html .= 'Всего: <strong data-role="selected">0</strong>&nbsp;&Iota;&nbsp;';
         }
-        $html .= 'Выбрано: <strong>' . $count . '</strong>';
+        $html .= 'Rows: <strong>' . $count . '</strong>';
         $html .= '</div>';
 
         $html .= '<div class="pull-left">';
@@ -58,7 +59,7 @@ class Toolbar implements RenderInterface
         //actions
         $actions = $this->getActions();
         if (!empty($actions)) {
-            $html .= '<div class="pull-left">Действие:&nbsp;';
+            $html .= '<div class="pull-left">Actions:&nbsp;';
             $html .= '<select class="additionally" style="margin-right: 10px; max-width:150px;" name="' . $this->getGrid()->getName() . '_action">';
             $html .= '<option></option>';
             foreach ($actions as $key => &$action) {

@@ -144,6 +144,6 @@ class Button implements RenderInterface
             $icon = '<i class="icon-' . $icon . ' icon-white"></i>';
         }
 
-        return '<button data-role="tooltip" title="' . $this->getHint() . '" class="btn btn-sm ' . $this->getClass() . '" onclick="' . $this->getCallback() . '">' . ($icon ? $icon . ' ' : '') . $this->getTitle() . '</button>';
+        return '<button data-toggle="tooltip" data-original-title="' . $this->getHint() . '" class="btn btn-sm ' . $this->getClass() . '" onclick="' . $this->getCallback() . '">' . ($icon ? $icon . ' ' : '') . $this->getTitle() . '</button>';
     }
 }

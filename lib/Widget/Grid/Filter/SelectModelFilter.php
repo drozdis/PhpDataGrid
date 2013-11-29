@@ -5,6 +5,8 @@ namespace Widget\Grid\Filter;
  * Клас фильтра колонки (Выпадающий список - данные берутся из модели)
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
+ *
+ * @todo this filter
  */
 class SelectModelFilter extends SelectFilter
 {

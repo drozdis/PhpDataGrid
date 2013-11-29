@@ -177,7 +177,7 @@ abstract class AbstractFilter extends ObserverAbstract implements RenderInterfac
                     if (is_array($value)) {
                         $value = join(',', $value);
                     }
-                    $value = str_replace(array(', ', ' ,'), ',', preg_replace('//\s+//', ' ', $value));
+                    $value = str_replace(array(', ', ' ,'), ',', preg_replace('#\s+#', ' ', $value));
                     $value = array_map('intval', explode(',', str_replace(' ', ',', trim($value))));
                     $store->addFilter($this->getColumn()->getName(), $this->getField(), $value, 'IN (?)');
                     break;

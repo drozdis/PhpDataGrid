@@ -70,6 +70,16 @@ abstract class AbstractStorage extends ObserverAbstract
     public function __construct()
     {
         $this->orders = $this->orders + $this->defaultOrders;
+
+        $this->init();
+    }
+
+    /**
+     * initizlize
+     */
+    protected function init()
+    {
+
     }
 
     /**
@@ -182,9 +192,9 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * @param string $title
+     * @param array $data
      *
-     * @return AbstractStorage
+     * @return $this
      */
     public function setData($data)
     {

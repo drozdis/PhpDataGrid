@@ -67,7 +67,7 @@ interface ModelStorageInterface
      *
      * @return ModelStorageInterface
      */
-    public function filter($field, $operation, $data, $function = null);
+    //public function filter($field, $operation, $data, $function = null);
 
     /**
      * Получение массива записей
@@ -75,5 +75,5 @@ interface ModelStorageInterface
      *
      * @return ArrayObject
      */
-    public function findAll($assoc = false);
+    public function findAll();
 }

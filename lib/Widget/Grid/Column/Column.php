@@ -509,10 +509,6 @@ class Column extends ObserverAbstract implements RenderInterface
             $attrs = (array) $this->getAttrs();
 
             $class = !empty($attrs['class']) ? $attrs['class'] : '';
-            if ($align = $this->getAlign()) {
-                $class .= ' a-' . $align;
-            }
-
             if ($this->isNowrap()) {
                 $class .= ' nowrap';
             }
@@ -523,8 +519,9 @@ class Column extends ObserverAbstract implements RenderInterface
             }
 
             $value = $this->value($row);
-            $value === '' && $value = '&nbsp;';
-            $html = '<td ' . ($class ? 'class="' . trim($class) . '"' : '') . ' ' . join(' ', $arr) . '>' . $value . '</td>';
+
+            ($value === '' || $value === null) && $value = '&nbsp;';
+            $html = '<td '.($this->getAlign() ? 'align="'.$this->getAlign().'"': '').' ' . ($class ? 'class="' . trim($class) . '"' : '') . ' ' . join(' ', $arr) . '>' . $value . '</td>';
         }
 
         return $html;
@@ -571,18 +568,20 @@ class Column extends ObserverAbstract implements RenderInterface
             $dataIndex = explode('.', $key);
             $value = $row;
             foreach ($dataIndex as $index) {
-                if (empty($value) || $value == null) {
+                if (empty($value)) {
                     break;
                 }
 
-                if (isset($value[$index])) {
-                    $value = $value[$index];
+                $v = \Widget\Helper::getValue($value, $index);
+                if ($v !== null) {
+                    $value = $v;
                 } else {
-                    if (array_key_exists($index, $value) && is_null($value[$index])) {
-                        $value = '';
-                    } else {
-                        $value = join('<br/>', A1_Helper_array::findKey($index, $value));
-                    }
+                    $value = '';
+//                    if (array_key_exists($index, $value) && is_null($value[$index])) {
+//                        $value = '';
+//                    } else {
+//                        $value = join('<br/>', A1_Helper_array::findKey($index, $value));
+//                    }
                 }
             }
             if (is_array($value)) {
