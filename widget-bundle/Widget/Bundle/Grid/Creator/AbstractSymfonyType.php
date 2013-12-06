@@ -1,14 +1,15 @@
 <?php
 namespace Widget\Bundle\Grid\Creator;
 
-use Widget\Grid\AbstractGridCreator;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use Widget\Grid\AbstractGridCreator;
+use Widget\Grid\AbstractType;
 use Widget\Grid\GridBuilder;
 
 /**
- * Class SymfonyCreator
+ * Class AbstractSymfonyType
  */
-class SymfonyCreator extends AbstractGridCreator
+abstract class AbstractSymfonyType extends AbstractType
 {
     /**
      * @var Translator
@@ -21,13 +22,5 @@ class SymfonyCreator extends AbstractGridCreator
     public function setTranslator(Translator $translator)
     {
         $this->translator = $translator;
-    }
-
-    /**
-     * @param GridBuilder $builder
-     */
-    public function buildGrid(GridBuilder $builder)
-    {
-
     }
 }

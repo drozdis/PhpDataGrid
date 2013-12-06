@@ -7,50 +7,49 @@ namespace Widget\Grid;
 class GridFactory
 {
     /**
-     * @param string $type
+     * @param string $class
      *
      * @return Grid
      * @throws \Exception
      */
-    public static function create($type)
+    public static function create($class)
     {
-        $class = __NAMESPACE__ . '\\' . ucfirst($type);
+        $class = __NAMESPACE__ . '\\' . ucfirst($class);
         if (!class_exists($class)) {
-            throw new \Exception('Unknown type ' . $type);
+            throw new \Exception('Unknown type ' . $class);
         }
 
         return new $class;
     }
 
     /**
-     * @param string|Grid $type
-     * @param array       $options
+     * @param string|Grid $class
      *
      * @return GridBuilder
      */
-    public static function createBuilder($type)
+    public static function createBuilder($class)
     {
-        if (!$type instanceof Grid) {
-            $grid = self::create($type);
+        if (!$class instanceof Grid) {
+            $grid = self::create($class);
         }
 
         return new GridBuilder($grid);
     }
 
     /**
-     * @param AbstractGridCreator $creator
-     * @param string|Grid         $type
-     * @param array               $options
+     * @param AbstractType $type
+     * @param string|Grid  $class
+     * @param array        $options
      *
      * @return Grid
      */
-    public static function createGrid(AbstractGridCreator $creator, $type, $options = array())
+    public static function createGrid(AbstractType $type, $class, $options = array())
     {
         //create builder
-        $builder = self::createBuilder($type);
+        $builder = self::createBuilder($class);
 
         //build bgrid
-        $creator->buildGrid($builder, $creator->getDefaults() + $options);
+        $type->buildGrid($builder, $type->getDefaults() + $options);
 
         //get grid
         return $builder->getGrid();

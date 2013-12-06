@@ -2,7 +2,7 @@
 namespace Widget\Bundle\Grid;
 
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
-use Widget\Bundle\Grid\Creator\SymfonyCreator;
+use Widget\Bundle\Grid\Creator\AbstractSymfonyType;
 use Widget\Grid\Grid;
 use Widget\Grid\GridBuilder;
 use Widget\Grid\GridFactory;
@@ -18,28 +18,27 @@ class Factory
     private $translator;
 
     /**
-     * @param SymfonyCreator $creator
-     * @param string         $type
-     * @param array          $options
+     * @param AbstractSymfonyType $type
+     * @param string              $class
+     * @param array               $options
      *
      * @return Grid
      */
-    public function createGrid(SymfonyCreator $creator, $type = 'grid', $options = array())
+    public function createGrid(AbstractSymfonyType $type, $class, $options = array())
     {
-        $creator->setTranslator($this->translator);
+        $type->setTranslator($this->translator);
 
-        return GridFactory::createGrid($creator, $type, $options);
+        return GridFactory::createGrid($type, $class, $options);
     }
 
     /**
-     * @param string $type
-     * @param array  $options
+     * @param string|Grid $class
      *
      * @return GridBuilder
      */
-    public function createBuilder($type = 'grid', $options = array())
+    public function createBuilder($class)
     {
-        return GridFactory::createBuilder($type, $options);
+        return GridFactory::createBuilder($class);
     }
 
     /**

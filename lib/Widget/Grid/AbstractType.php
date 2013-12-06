@@ -2,9 +2,9 @@
 namespace Widget\Grid;
 
 /**
- * Class AbstractGridCreator
+ * Class AbstractType
  */
-abstract class AbstractGridCreator
+abstract class AbstractType
 {
     /**
      * @return array
