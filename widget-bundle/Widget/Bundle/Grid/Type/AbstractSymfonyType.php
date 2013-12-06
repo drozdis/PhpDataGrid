@@ -1,5 +1,5 @@
 <?php
-namespace Widget\Bundle\Grid\Creator;
+namespace Widget\Bundle\Grid\Type;
 
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Widget\Grid\AbstractGridCreator;
