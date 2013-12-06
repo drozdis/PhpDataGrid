@@ -2,7 +2,7 @@
 namespace Widget\Bundle\Grid;
 
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
-use Widget\Bundle\Grid\Creator\AbstractSymfonyType;
+use Widget\Bundle\Grid\Type\AbstractSymfonyType;
 use Widget\Grid\Grid;
 use Widget\Grid\GridBuilder;
 use Widget\Grid\GridFactory;
