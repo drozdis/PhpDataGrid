@@ -59,9 +59,9 @@ class ResourceManager implements ResourceManagerInterface
     }
 
     /**
-     *  render
+     * @return string
      */
-    public function render()
+    public function javascript()
     {
         $result = array();
         foreach ($this->javascriptFiles as $file) {
@@ -76,6 +76,15 @@ class ResourceManager implements ResourceManagerInterface
             $result[] = '</script>';
         }
 
+        return join("\n", $result);
+    }
+
+    /**
+     * @return string
+     */
+    public function stylesheet()
+    {
+        $result = array();
         foreach ($this->styleSheetFiles as $file) {
             $result[] = '<link rel="stylesheet" href="' . $file . '" />';
         }
@@ -90,5 +99,4 @@ class ResourceManager implements ResourceManagerInterface
 
         return join("\n", $result);
     }
-
 }

@@ -27,7 +27,12 @@ interface ResourceManagerInterface
     public function addStyleSheet($content);
 
     /**
-     *  render
+     * @return string
      */
-    public function render();
+    public function javascript();
+
+    /**
+     * @return string
+     */
+    public function stylesheet();
 }

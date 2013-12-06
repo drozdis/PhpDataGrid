@@ -4,7 +4,7 @@ services:
         calls:
             - [setTranslator, [@translator]]
 
-    widget_bundle_twig_extension:
+    widget_twig_extension:
         class: Widget\Bundle\Twig\RequestExtension
         tags:
             - { name: twig.extension }
