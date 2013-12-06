@@ -24,7 +24,7 @@ class Factory
      *
      * @return Grid
      */
-    public function createGrid(AbstractSymfonyType $type, $class, $options = array())
+    public function createGrid(AbstractSymfonyType $type, $class = 'grid', $options = array())
     {
         $type->setTranslator($this->translator);
 
