@@ -1,5 +1,6 @@
 <?php
 namespace Widget\Grid\Storage;
+
 use Widget\ObserverAbstract;
 
 /**
@@ -83,7 +84,6 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * Добавить фильтр
      * addFilter('brand', 'p.brand_id', array(1,2,3), 'IN(?)');
      * addFilter('name', 'p.name', '%Пиво%', 'LIKE LOWER(?)', 'LOWER');
      *
@@ -91,7 +91,7 @@ abstract class AbstractStorage extends ObserverAbstract
      * @param string $field
      * @param string $value
      * @param string $operation
-     * @param string $function  - функция что распостраняеться на $field, LOWER($field)
+     * @param string $function функция что распостраняеться на $field, LOWER($field)
      *
      * @return AbstractStorage
      */
@@ -103,8 +103,9 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * Добавить сортировку
-     * @exampl addOrder('name', 'asc');
+     * <code>
+     *   $storage->addOrder('name', 'asc');
+     * </code>
      *
      * @param string $name
      * @param string $dir
@@ -119,8 +120,10 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * Установить сортировки
-     * @example setOrders(array('name'=>'asc', 'description' => 'desc));
+     * Set multiple orders
+     * <code>
+     *   $storage->setOrders(array('name'=>'asc', 'description' => 'desc));
+     * </code>
      *
      * @param array $orders
      *
@@ -134,9 +137,6 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * Установить сортировки по умолчанию
-     * @example setOrders(array('name'=>'asc','description' => 'desc));
-     *
      * @param array $orders
      *
      * @return AbstractStorage
@@ -173,7 +173,6 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
-     * Проверка - сортировка по полую
      * @param string $name
      *
      * @return Boolean
@@ -285,7 +284,7 @@ abstract class AbstractStorage extends ObserverAbstract
 
     /**
      * Загрузка данных
-     * @param $limit|Null К-во записей выборки
+     * @param $limit |Null К-во записей выборки
      *
      * @return AbstractStorage
      */
