@@ -49,10 +49,14 @@ class GridFactory
         $builder = self::createBuilder($class);
 
         //build bgrid
-        $type->buildGrid($builder, $type->getDefaults() + $options);
+        $type->buildGrid($builder, $options);
+
+        //set default options
+        $grid = $builder->getGrid();
+        \Widget\Helper::setConstructorOptions($grid, $type->getDefaultsOptions());
 
         //get grid
-        return $builder->getGrid();
+        return $grid;
     }
 
 }

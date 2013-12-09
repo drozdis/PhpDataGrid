@@ -9,7 +9,7 @@ abstract class AbstractType
     /**
      * @return array
      */
-    public function getDefaults()
+    public function getDefaultsOptions()
     {
         return array();
     }
