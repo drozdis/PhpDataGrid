@@ -28,8 +28,8 @@ class Tree extends Column
         if ($tree === null) {
             $rows = $this->getGrid()->getStorage()->getData();
             $options = array(
-                'id' => $this->getGrid()->getIdField(),
-                'pid' => $this->getGrid()->getParentField(),
+                'idField' => $this->getGrid()->getIdField(),
+                'parentField' => $this->getGrid()->getParentField(),
                 'data' => $rows
             );
             $tree = new \Widget\Grid\Helper\TreeHelper($options);

@@ -16,13 +16,13 @@ class TreeHelper
      * Идентификатор данных
      * @var Integer
      */
-    protected $id = 'id';
+    protected $idField = 'id';
 
     /**
      * Идентификатор "ссылка на родилеть"
      * @var Integer
      */
-    protected $pid = 'pid';
+    protected $parentField = 'pid';
 
     /**
      * @var array
@@ -58,13 +58,13 @@ class TreeHelper
     }
 
     /**
-     * @param $row
+     * @param array|obejct $row
      *
      * @return mixed
      */
     protected function getId($row)
     {
-        return $this->getValue($row, $this->id);
+        return $this->getValue($row, $this->idField);
     }
 
     /**
@@ -74,7 +74,7 @@ class TreeHelper
      */
     protected function getPid($row)
     {
-        return $this->getValue($row, $this->pid);
+        return $this->getValue($row, $this->parentField);
     }
 
     /**
@@ -91,25 +91,25 @@ class TreeHelper
     }
 
     /**
-     * @param Integer $id
+     * @param string $idField
      *
-     * @return TreeHelper
+     * @return $this
      */
-    public function setId($id)
+    public function setIdField($idField)
     {
-        $this->id = $id;
+        $this->idField = $idField;
 
         return $this;
     }
 
     /**
-     * @param Integer $pid
+     * @param string $parentField
      *
-     * @return TreeHelper
+     * @return $this
      */
-    public function setPid($pid)
+    public function setParentField($parentField)
     {
-        $this->pid = $pid;
+        $this->parentField = $parentField;
 
         return $this;
     }
@@ -117,7 +117,7 @@ class TreeHelper
     /**
      * @param array $data
      *
-     * @return TreeHelper
+     * @return $this
      */
     public function setData(array $data)
     {
@@ -127,23 +127,9 @@ class TreeHelper
     }
 
     /**
-     * @param array $data
-     *
-     * @return TreeHelper
-     */
-    public function setActive(array $data)
-    {
-        $this->active = (array) $data;
-
-        return $this;
-    }
-
-    /**
-     * setters for counter
-     *
      * @param string $counter
      *
-     * @return TreeHelper
+     * @return $this
      */
     public function setCounter($counter)
     {
@@ -152,28 +138,17 @@ class TreeHelper
         return $this;
     }
 
-    /**
-     * setters for deleteEmpty
-     *
-     * @param $flag boolean
-     */
-    public function setDeleteEmpty($flag = true)
-    {
-        $this->deleteEmpty = (boolean) $flag;
-
-        return $this;
-    }
 
     /**
-     * @param integer $parentId
-     * @param boolean $rebuild
+     * @param int  $parentId
+     * @param bool $rebuild
      *
-     * @return stdClass
+     * @return object
      */
     public function tree($parentId = self::PARENTID_DEFAULT, $rebuild = false)
     {
         if ($rebuild || empty($this->tree[$parentId])) {
-            $this->tree[$parentId] = new \stdClass();
+            $this->tree[$parentId]        = new \stdClass();
             $this->tree[$parentId]->count = 0;
 
             $this->tree[$parentId]->data = array();
@@ -203,14 +178,14 @@ class TreeHelper
             unset($data[$k]);
             $rec = & $tree[];
             $rec = array(
-                'data' => $row,
-                'active' => in_array($this->getId($row), $this->active),
+                'data'        => $row,
+                'active'      => in_array($this->getId($row), $this->active),
                 'count_child' => 0,
-                'path' => array($this->getId($row)),
-                'child' => array()
+                'path'        => array($this->getId($row)),
+                'child'       => array()
             );
             if ($this->counter) {
-                $value = $this->getValue($row, $this->counter);
+                $value          = $this->getValue($row, $this->counter);
                 $rec['counter'] = !empty($value) ? $value : 0;
             }
             $count = $this->buildTree($data, $rec['child'], $this->getId($row));
@@ -275,8 +250,8 @@ class TreeHelper
             }
             unset($data[$k]);
             $out[] = $this->getId($row);
-            $arr = $this->findChild($data, $this->getId($row));
-            $out = array_merge($out, $arr);
+            $arr   = $this->findChild($data, $this->getId($row));
+            $out   = array_merge($out, $arr);
         }
 
         return $out;
@@ -300,8 +275,8 @@ class TreeHelper
             case self::CHILD_ALL:
                 $data = $childs = $this->findChildData($this->data, $parentId, true);
                 foreach ($childs as $child) {
-                    if (!empty($child[$this->id][$this->pid])) {
-                        $data = array_merge($data, $this->findChildData($this->data, $child[$this->id][$this->pid]));
+                    if (!empty($child[$this->idField][$this->parentField])) {
+                        $data = array_merge($data, $this->findChildData($this->data, $child[$this->idField][$this->parentField]));
                     }
                 }
                 break;
@@ -326,62 +301,20 @@ class TreeHelper
             }
             unset($data[$k]);
             $out[] = $row;
-            $arr = $recurs ? $this->findChildData($data, $this->getId($row), $recurs) : array();
-            $out = array_merge($out, $arr);
+            $arr   = $recurs ? $this->findChildData($data, $this->getId($row), $recurs) : array();
+            $out   = array_merge($out, $arr);
         }
 
         return $out;
     }
 
-    /**
-     * @param boolean $assoc
-     *
-     * @return array
-     */
-    public function getData($assoc = false)
-    {
-        if ($assoc === false) {
-            return $this->data;
-        } else {
-            return A1_Helper_Array::makeAssoc($this->data, $this->id);
-        }
-    }
 
     /**
-     * @param integer $id
+     * @param int $id
+     * @param int $parentId
      *
-     * @return array
+     * @return array|bool
      */
-    public function getItem($id)
-    {
-        return A1_Helper_Array::find($this->data, $this->id, $id);
-    }
-
-    /**
-     * получение всех id дерева
-     *
-     * @return array
-     */
-    public function getAllID()
-    {
-        return A1_Helper_Array::findKey($this->id, $this->data);
-    }
-
-    /**
-     * @param array $way way
-     *
-     * @return Integer
-     */
-    public function getBranchByWay(array $way, $parentId = self::PARENTID_DEFAULT, $key = 'code')
-    {
-        $result = $this->getBranchByWayRecursive($this->tree($parentId)->data, $way, 0, $key);
-        if ($result === false) {
-            return false;
-        } else {
-            return $way;
-        }
-    }
-
     public function getBranchById($id, $parentId = self::PARENTID_DEFAULT)
     {
         $result = $this->getBranchByIdRecursive(array('way' => array(), 'finished' => false), $id, $this->tree($parentId)->data);
@@ -392,15 +325,22 @@ class TreeHelper
         }
     }
 
+    /**
+     * @param array $result
+     * @param int   $id
+     * @param int   $tree
+     *
+     * @return array
+     */
     protected function getBranchByIdRecursive($result, $id, $tree)
     {
         foreach ($tree as $item) {
-            $_id = \Widget\Helper::getValue($item['data'], $this->id);
+            $findId = \Widget\Helper::getValue($item['data'], $this->idField);
 
-            $localResult = $result;
-            $localResult['way'][$_id] = $item['data'];
-            $localResult['last_id'] = $_id;
-            if ($_id == $id) {
+            $localResult                 = $result;
+            $localResult['way'][$findId] = $item['data'];
+            $localResult['last_id']      = $findId;
+            if ($findId == $id) {
                 $localResult['finished'] = true;
 
                 return $localResult;
@@ -416,44 +356,4 @@ class TreeHelper
         return $result;
     }
 
-    /**
-     * search categories in the tree branches
-     *
-     * @param array   $tree
-     * @param array   &$way
-     * @param Integer $level
-     * @param string  $key
-     *
-     * @return Integer|Boolean
-     */
-    protected function getBranchByWayRecursive($tree, array &$way, $level = 0, $key = 'code')
-    {
-        switch (sizeof($way) - $level) {
-            case 0:
-                return false;
-                break;
-            case 1:
-                foreach ($tree as $item) {
-                    if (@$item['data'][$key] === $way[$level]) {
-                        $way[$level] = $item['data'];
-
-                        return floatval($item['data'][$this->id]);
-                    }
-                }
-
-                return false;
-                break;
-            default:
-                foreach ($tree as $item) {
-                    if (@$item['data'][$key] === $way[$level]) {
-                        $way[$level] = $item['data'];
-
-                        return $this->getBranchByWayrecursive($item['child'], $way, $level + 1, $key);
-                    }
-                }
-
-                return false;
-                break;
-        }
-    }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Widget\Grid;
+
 use Widget\Grid\Helper\TreeHelper;
-use Widget\Helper;
 
 /**
  * Class Tree Grid
@@ -74,11 +74,11 @@ class Tree extends Grid
      */
     protected function renderBody()
     {
-        $html = '';
+        $html    = '';
         $options = array(
-            'id' => $this->getIdField(),
-            'pid' => $this->getParentField(),
-            'data' => $this->getStorage()->getData()
+            'idField'     => $this->getIdField(),
+            'parentField' => $this->getParentField(),
+            'data'        => $this->getStorage()->getData()
         );
 
         $tree = new TreeHelper($options);
