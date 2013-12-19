@@ -37,7 +37,7 @@ class Pagination extends AbstractExtension
      */
     public function init()
     {
-        $topToolbar = $this->getWidget()->getTopToolbar();
+        $topToolbar    = $this->getWidget()->getTopToolbar();
         $bottomToolbar = $this->getWidget()->getBottomToolbar();
 
         if ($bottomToolbar || $topToolbar) {

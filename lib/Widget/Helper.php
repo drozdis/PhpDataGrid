@@ -120,7 +120,7 @@ class Helper
     public static function getParam($hash, $name = null)
     {
         try {
-            $params = self::arrayMap('urldecode', (array) json_decode(base64_decode($hash)));
+            $params = self::arrayMap('urldecode', (array) json_decode(base64_decode($hash), true));
         } catch (Exception $e) {
             $params = array();
         }

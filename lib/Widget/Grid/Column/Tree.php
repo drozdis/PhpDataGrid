@@ -26,13 +26,13 @@ class Tree extends Column
     {
         static $tree = null;
         if ($tree === null) {
-            $rows = $this->getGrid()->getStorage()->getData();
+            $rows    = $this->getGrid()->getStorage()->getData();
             $options = array(
-                'idField' => $this->getGrid()->getIdField(),
+                'idField'     => $this->getGrid()->getIdField(),
                 'parentField' => $this->getGrid()->getParentField(),
-                'data' => $rows
+                'data'        => $rows
             );
-            $tree = new \Widget\Grid\Helper\TreeHelper($options);
+            $tree    = new \Widget\Grid\Helper\TreeHelper($options);
         }
 
         return count($tree->getBranchById($id)) - 1;

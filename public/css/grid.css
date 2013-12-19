@@ -63,72 +63,16 @@
 
 .table .filter td .range .range-line {
     margin-bottom: 3px;
-    width: 100px !important;
     clear: both;
 }
 
-.table .filter td .range div.date {
+.table .filter td .range input {
+    margin-top: 0;
     min-width: 85px;
-}
-
-.table .filter td .range div.date input.input-text {
-    float: left !important;
-}
-
-.table .filter td .range div.date span.range-calendar {
-    display: inline;
-}
-
-.table .filter td .input-append, .input-prepend {
-    margin-bottom: 0;
-}
-
-.table .filter td .input-append .add-on, .input-prepend .add-on {
-    height: 14px;
-    line-height: 15px;
 }
 
 .filter .field-100 input {
     padding: 4px 0 !important;
-}
-
-.table .filter td .range input {
-    width: 67px !important;
-    margin-top: 0;
-}
-
-.table .filter td div.filter-date {
-    margin-bottom: 3px;
-    width: 100px !important;
-    clear: both;
-}
-
-.table .filter td div.filter-date span {
-    margin-top: 5px;
-}
-
-.table .filter td div.filter-date input {
-    float: right;
-    width: 67px !important;
-    margin-top: 0;
-}
-
-.table .filter td .range select {
-    float: right;
-    width: 56px !important;
-    margin-top: 0;
-}
-
-.table .filter td .range .select-range {
-    float: right;
-    width: 80% !important;
-}
-
-.table .filter td .range .label {
-    display: block;
-    width: 25px;
-    float: left;
-    padding-left: 2px;
 }
 
 /* Сортровка в таблице */

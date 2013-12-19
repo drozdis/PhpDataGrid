@@ -13,6 +13,6 @@ class Boolean extends Column
      */
     protected function value($row)
     {
-        return parent::value($row) > 0 ? 'да' : 'нет';
+        return parent::value($row) > 0 ? 'yes' : 'no';
     }
 }

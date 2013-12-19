@@ -1,9 +1,10 @@
 <?php
 namespace Widget\Grid\Filter;
+
 use Widget\Grid\Storage\AbstractStorage;
 
 /**
- * Клас фильтра колонки дат
+ * Date filter
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
@@ -15,17 +16,26 @@ class DateFilter extends AbstractFilter
     public function render()
     {
         $column = $this->getColumn()->getName();
-        $grid = $this->getGrid();
-        $value = $this->getValue();
+        $grid   = $this->getGrid();
+        $value  = $this->getValue();
 
-        $attribs = array(
-            'class' => 'input-text',
-            'onkeypress' => $grid->getJavascriptObject() . '.doFilterEnter(event);'
-        );
+        $html = '<input type="text" class="form-control date" value="' . $value . '" id="' . $column . '" name="' . $column . '" />';
 
-        $html = '<div class="filter-date">';
-        $html .= $this->getView()->calendar($column, $value, array('button' => true), $attribs);
-        $html .= '</div>';
+        $js = '$(function(){
+            $( "#' . $column . '" ).datepicker({
+                changeMonth: true,
+                dateFormat: "dd.mm.yy",
+                onSelect : function() {
+                    ' . $grid->getJavascriptObject() . '.doFilter();
+                }
+            });
+        });';
+
+        if ($grid->hasIsAjax()) {
+            $html .= '<script type="text/javascript">' . $js . '</script>';
+        } else {
+            $grid->getResourceManager()->addJavascript($js);
+        }
 
         return $html;
     }
@@ -37,7 +47,9 @@ class DateFilter extends AbstractFilter
     {
         $value = $this->getValue();
         if (!empty($value)) {
-            $store->addFilter($this->getColumn()->getName(), $this->getField(), $value, ' = ?');
+            $date = new \DateTime($value);
+
+            $store->addFilter($this->getColumn()->getName(), $this->getField(), $date->format('y-m-d'), ' = ?');
         }
 
         return $this;

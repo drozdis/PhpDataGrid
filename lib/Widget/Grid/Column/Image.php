@@ -13,8 +13,9 @@ class Image extends Column
     {
         $value = parent::value($row);
         if (!empty($value)) {
-            return '<img src="'.$value.'" />';
+            return '<img src="' . $value . '" />';
         }
+
         return '';
     }
 }

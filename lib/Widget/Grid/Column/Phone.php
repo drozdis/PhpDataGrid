@@ -44,10 +44,10 @@ class Phone extends Column
         if (empty($phone)) {
             return $phone;
         }
-        $phone = preg_replace('#[^\d]#', '', $phone);
-        $phone = preg_replace('#^\+?3\s?8#', '', $phone);
+        $phone  = preg_replace('#[^\d]#', '', $phone);
+        $phone  = preg_replace('#^\+?3\s?8#', '', $phone);
         $result = $format ? $format : $this->format;
-        $i = 0;
+        $i      = 0;
         while (($ps = strpos($result, '#')) !== false) {
             $result = substr_replace($result, isset($phone[$i]) ? $phone[$i] : '', $ps, 1);
             $i++;

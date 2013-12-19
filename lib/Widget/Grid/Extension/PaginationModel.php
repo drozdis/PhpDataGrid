@@ -12,7 +12,6 @@ use Widget\RenderInterface;
  */
 class PaginationModel implements RenderInterface
 {
-
     /**
      * Максимальное к-во на странице
      * @var string
@@ -61,22 +60,10 @@ class PaginationModel implements RenderInterface
     protected $params = array();
 
     /**
-     * Список доп параметров, которые будут передаватся в URL
-     * @var array
-     */
-    protected $optional = null;
-
-    /**
      * Пареметр
      * @var string
      */
     protected $pageKey = 'page';
-
-    /**
-     * Суфикс к урл, например #suffix
-     * @var string
-     */
-    protected $urlSuffix = '';
 
     /**
      * @var \Widget\Grid\Storage\AbstractStorage
@@ -91,26 +78,6 @@ class PaginationModel implements RenderInterface
     {
         $this->storage = $storage;
         Helper::setConstructorOptions($this, $options);
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptional()
-    {
-        return $this->optional;
-    }
-
-    /**
-     * @param array $optional
-     *
-     * @return Paginator
-     */
-    public function setOptional($optional)
-    {
-        $this->optional = $optional;
-
-        return $this;
     }
 
     /**
@@ -144,15 +111,6 @@ class PaginationModel implements RenderInterface
         $this->pageRange = $pageRange;
 
         return $this;
-    }
-
-    /**
-     * К-во страниц в диапазоне
-     * @return Integer
-     */
-    public function getPageRange()
-    {
-        return $this->pageRange;
     }
 
     /**
@@ -192,37 +150,12 @@ class PaginationModel implements RenderInterface
 
     /**
      * Ключ в урле который отвечает за страницу (/news/page/2)
-     * @return string
-     */
-    public function getPageKey()
-    {
-        return $this->pageKey;
-    }
-
-    /**
-     * Ключ в урле который отвечает за страницу (/news/page/2)
      *
      * @param string $name
      */
     public function setPageKey($name)
     {
         $this->pageKey = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrlSuffix()
-    {
-        return $this->urlSuffix;
-    }
-
-    /**
-     * @param string $suffix
-     */
-    public function setUrlSuffix($suffix)
-    {
-        $this->urlSuffix = $suffix;
     }
 
     /**
@@ -269,7 +202,7 @@ class PaginationModel implements RenderInterface
     public function getItemsByPage($pageNumber = null)
     {
         $pageNumber = $this->normalizePageNumber($pageNumber ? $pageNumber : $this->getPage());
-        $offset = ($pageNumber - 1) * $this->getOnPage();
+        $offset     = ($pageNumber - 1) * $this->getOnPage();
 
         return $this->storage->getItems($offset, $this->getOnPage());
     }
@@ -290,11 +223,6 @@ class PaginationModel implements RenderInterface
         }
 
         $params = array(array($this->pageKey => $page));
-        if (!empty($this->optional)) {
-            foreach ($this->optional as $k => $v) {
-                $params[] = array($k => $v);
-            }
-        }
 
         $get = null;
         foreach ($params as $arr) {
@@ -314,7 +242,7 @@ class PaginationModel implements RenderInterface
             $url = !empty($get) ? rtrim($url, '/') . '&' . ltrim($get, '&') : rtrim($url, '/');
         }
 
-        return $url . ($this->urlSuffix ? '#' . $this->urlSuffix : '');
+        return $url;
     }
 
     /**
@@ -333,15 +261,15 @@ class PaginationModel implements RenderInterface
      */
     protected function createPages()
     {
-        $currentPageNumber = $this->getPage();
-        $pageCount = $this->calculatePageCount();
-        $pages = new \stdClass();
-        $pages->pageCount = $pageCount;
+        $currentPageNumber       = $this->getPage();
+        $pageCount               = $this->calculatePageCount();
+        $pages                   = new \stdClass();
+        $pages->pageCount        = $pageCount;
         $pages->itemCountPerPage = $this->getOnPage();
-        $pages->first = array('url' => $this->url(1), 'number' => 1);
-        $pages->current = $currentPageNumber;
-        $pages->last = array("url" => $this->url($pageCount), "number" => $pageCount);
-        $pages->onPage = $this->getOnPage();
+        $pages->first            = array('url' => $this->url(1), 'number' => 1);
+        $pages->current          = $currentPageNumber;
+        $pages->last             = array("url" => $this->url($pageCount), "number" => $pageCount);
+        $pages->onPage           = $this->getOnPage();
         // Previous and next
         if ($currentPageNumber - 1 > 0) {
             $pages->previous = array("url" => $this->url($currentPageNumber - 1), "number" => $currentPageNumber - 1);
@@ -354,12 +282,12 @@ class PaginationModel implements RenderInterface
         $pages->pagesInRange = $this->getPages();
         foreach ($pages->pagesInRange as &$onePage) {
             $page['number'] = $onePage;
-            $page['url'] = $this->url($onePage);
-            $onePage = $page;
+            $page['url']    = $this->url($onePage);
+            $onePage        = $page;
         }
 
         $pages->firstPageInRange = min($pages->pagesInRange);
-        $pages->lastPageInRange = max($pages->pagesInRange);
+        $pages->lastPageInRange  = max($pages->pagesInRange);
 
         return $pages;
     }
@@ -372,32 +300,31 @@ class PaginationModel implements RenderInterface
     protected function getPages()
     {
         $pageNumber = $this->getPage();
-        $pageCount = $this->calculatePageCount();
-        $pageRange = $this->getPageRange();
-        if ($pageRange > $pageCount) {
-            $pageRange = $pageCount;
+        $pageCount  = $this->calculatePageCount();
+        if ($this->pageRange > $pageCount) {
+            $this->pageRange = $pageCount;
         }
 
-        $delta = ceil($pageRange / 2);
+        $delta = ceil($this->pageRange / 2);
 
-        if ($pageNumber - $delta > $pageCount - $pageRange) {
-            $lowerBound = $pageCount - $pageRange + 1;
+        if ($pageNumber - $delta > $pageCount - $this->pageRange) {
+            $lowerBound = $pageCount - $this->pageRange + 1;
             $upperBound = $pageCount;
         } else {
             if ($pageNumber - $delta < 0) {
                 $delta = $pageNumber;
             }
 
-            $offset = $pageNumber - $delta;
+            $offset     = $pageNumber - $delta;
             $lowerBound = $offset + 1;
-            $upperBound = $offset + $pageRange;
+            $upperBound = $offset + $this->pageRange;
         }
 
-        if ($lowerBound == 2 && $upperBound - $lowerBound == $pageRange - 1) {
+        if ($lowerBound == 2 && $upperBound - $lowerBound == $this->pageRange - 1) {
             --$upperBound;
         }
 
-        if ($lowerBound == $pageCount - $pageRange && $lowerBound > 1) {
+        if ($lowerBound == $pageCount - $this->pageRange && $lowerBound > 1) {
             ++$lowerBound;
         }
 
@@ -479,40 +406,54 @@ class PaginationModel implements RenderInterface
                 '<div class="pagination-centered">' .
                 '<ul class="pagination pagination-sm">';
             if (isset($params['previous'])) {
-                $html .= '<li><a href="' . $params['previous']['url'] . '">«</a></li>';
+                $html .= $this->renderHref($params['previous']['url'], '', '«');
             } else {
-                $html .= '<li class="disabled"><a href="javascript:void(0)">«</a></li>';
+                $html .= $this->renderHref(null, 'disabled', '«');
             }
 
             if ($params['first']['number'] != $params['firstPageInRange']['number']) {
-                $html .= '<li class="' . ($params['current'] == $params['first']['number'] ? 'active' : '') . '"><a href="' . $params['first']['url'] . '">' . $params['first']['number'] . '</a></li>';
+                $html .= $this->renderHref($params['first']['url'], $params['current'] == $params['first']['number'] ? 'active' : '', $params['first']['number']);
             }
 
             if (!in_array($params['first']['number'], array($params['firstPageInRange']['number'], $params['firstPageInRange']['number'] - 1))) {
-                $html .= '<li class="disabled"><a href="javascript:void(0)">...</a></li>';
+                $html .= $this->renderHref('', 'disabled', '...');
             }
 
             foreach ($params['pagesInRange'] as $page) {
-                $html .= '<li class="' . ($params['current'] == $page['number'] ? 'active' : '') . '"><a href="' . $page['url'] . '">' . $page['number'] . '</a></li>';
+                $html .= $this->renderHref($page['url'], $params['current'] == $page['number'] ? 'active' : '', $page['number']);
             }
 
             if (!in_array($params['last']['number'], array($params['lastPageInRange']['number'], $params['lastPageInRange']['number'] + 1))) {
-                $html .= '<li class="disabled"><a href="javascript:void(0)">...</a></li>';
+                $html .= $this->renderHref('', 'disabled', '...');
             }
 
             if ($params['last']['number'] != $params['lastPageInRange']['number']) {
-                $html .= '<li class="' . ($params['current'] == $params['last']['number'] ? 'active' : '') . '"><a href="' . $params['last']['url'] . '">' . $params['last']['number'] . '</a></li>';
+                $html .= $this->renderHref($params['last']['url'], $params['current'] == $params['last']['number'] ? 'active' : '', $params['last']['number']);
             }
 
             if (isset($params['next'])) {
-                $html .= '<li><a href="' . $params['next']['url'] . '">»</a></li>';
+                $html .= $this->renderHref($params['next']['url'], '', '»');
             } else {
-                $html .= '<li class="disabled"><a href="javascript:void(0)">»</a></li>';
+                $html .= $this->renderHref(null, 'disabled', '»');
             }
             $html .= '</ul>';
             $html .= '</div>';
         }
 
         return $html;
+    }
+
+    /**
+     * @param string $href
+     * @param string $class
+     * @param string $number
+     *
+     * @return string
+     */
+    private function renderHref($href, $class, $number)
+    {
+        $grid = $this->params['grid'];
+
+        return '<li class="' . $class . '"><a  onclick="' . $grid->getJavascriptObject() . '.load(this.href); return false;" onclick="" href="' . ($href ? $href : 'javascript:void(0)') . '">' . $number . '</a></li>';
     }
 }

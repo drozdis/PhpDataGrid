@@ -131,6 +131,12 @@ class Grid extends AbstractWidget
     protected $autoLoad = false;
 
     /**
+     * @var bool
+     */
+    protected $isAjax = false;
+
+
+    /**
      * {@inheritdoc}
      */
     public function __construct()
@@ -140,9 +146,6 @@ class Grid extends AbstractWidget
 
         //доп. данные
         $this->setParams($this->getUrlParams('params', true));
-
-        //параметры
-        $this->initGrid();
     }
 
     /**
@@ -200,47 +203,6 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ?????????? ????????? ??? ($_GET, $_POST - ????????)
-     * @return Grid
-     */
-    protected function initGrid()
-    {
-        // ????????? drag'n'drop ???? ???? ?????????? ?? ???????
-        foreach ($this->getColumns() as $column) {
-            if ($column instanceof \Widget\Grid\Column\Sorting) {
-                $column->setHidden(!empty($order));
-            }
-        }
-
-        //???/???? ???????
-        $extensionColumns = $this->getUrlParams('extension-columns', false);
-        if (!empty($extensionColumns['columns'])) {
-            foreach ($extensionColumns['columns'] as $i => $name) {
-                $name = str_replace('col-', '', $name);
-                if ($column = $this->getColumn($name)) {
-                    $column->setHidden(false)->setPosition($i + 1);
-                }
-            }
-        }
-        if (!empty($extensionColumns['disabled'])) {
-            foreach ($extensionColumns['disabled'] as $j => $name) {
-                $name = str_replace('col-', '', $name);
-                if ($column = $this->getColumn($name)) {
-                    $column->setHidden(true)->setPosition($j + count($extensionColumns['columns']) + 1);
-                }
-            }
-        }
-        if (!empty($extensionColumns['clear'])) {
-            $i = 1;
-            foreach ($this->getColumns() as $column) {
-                $column->setPosition($i++)->setHidden($column->isHidden());
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return \Widget\Grid\State\State
      */
     public function getState()
@@ -270,6 +232,26 @@ class Grid extends AbstractWidget
         $this->saveState = $saveState;
 
         return $this;
+    }
+
+    /**
+     * @param boolean $isAjax
+     *
+     * @return $this
+     */
+    public function setIsAjax($isAjax)
+    {
+        $this->isAjax = $isAjax;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasIsAjax()
+    {
+        return $this->isAjax;
     }
 
     /**
