@@ -1,19 +1,23 @@
 <?php
 namespace Widget\Grid\Column;
-use Widget\AbstractWidget;
+
+use Widget\AbstractRenderer;
 use Widget\Grid\Filter\AbstractFilter;
 use Widget\Grid\Grid;
 use Widget\Helper;
-use Widget\ObserverAbstract;
-use Widget\RenderInterface;
 
 /**
  * Grid column
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-class Column extends ObserverAbstract implements RenderInterface
+class Column extends AbstractRenderer
 {
+    /**
+     * @var mixed
+     */
+    protected $data;
+
     /**
      * @var string
      */
@@ -39,6 +43,7 @@ class Column extends ObserverAbstract implements RenderInterface
 
     /**
      * Позиционирования (left, center, right)
+     *
      * @var string
      */
     protected $align = '';
@@ -47,12 +52,6 @@ class Column extends ObserverAbstract implements RenderInterface
      * @var boolean
      */
     protected $nowrap = false;
-
-    /**
-     * Атрибуты, которые применяются к td (array('class' => 'sample', 'data-index' => 1, style => 'display:block'))
-     * @var array
-     */
-    protected $attrs = array();
 
     /**
      * Скрыть/Паказать колонку
@@ -81,12 +80,14 @@ class Column extends ObserverAbstract implements RenderInterface
     /**
      * Путь к данным
      * Берем данные по полю не с $row[$name], а с масива, например $row['category['name при dataIndex = category.name
+     *
      * @var string
      */
     protected $dataIndex = null;
 
     /**
      * Поле в БД name -> sp.name
+     *
      * @var string
      */
     protected $field = null;
@@ -114,10 +115,32 @@ class Column extends ObserverAbstract implements RenderInterface
     protected $options = array();
 
     /**
-     * Список автоматический аттачей
-     * @var array
+     * @param mixed $data
+     *
+     * @return $this
      */
-    protected $attachments = array();
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return 'Column/column.html.twig';
+    }
 
     /**
      * @param string $name
@@ -322,45 +345,6 @@ class Column extends ObserverAbstract implements RenderInterface
     }
 
     /**
-     * <code>
-     *     array(
-     *       'core/site' => array('key' => 'site_id', 'to' => 'site'),
-     *     )
-     * </code>
-     *
-     * @param array $attachments
-     *
-     * @return Column
-     */
-    public function setAttachments($attachments)
-    {
-        $this->attachments = $attachments;
-
-        return $this;
-    }
-
-    /**
-     * @return array $attachments
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    /**
-     * Обработка аттачей
-     * @return Column
-     */
-    public function processAttachments()
-    {
-        foreach ($this->attachments as $model => $attach) {
-            $this->getGrid()->getStorage()->getModel()->addAttach($model, $attach);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param Boolean $hidden
      *
      * @return Column
@@ -378,26 +362,6 @@ class Column extends ObserverAbstract implements RenderInterface
     public function isHidden()
     {
         return $this->hidden;
-    }
-
-    /**
-     * @return array $attrs
-     */
-    public function getAttrs()
-    {
-        return $this->attrs;
-    }
-
-    /**
-     * @param array $attrs
-     *
-     * @return Column
-     */
-    public function setAttrs($attrs)
-    {
-        $this->attrs = $attrs;
-
-        return $this;
     }
 
     /**
@@ -499,47 +463,55 @@ class Column extends ObserverAbstract implements RenderInterface
         return $this->url;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function render($row = array())
-    {
-        $html = '';
-        if ($this->isHidden() == false) {
-            $attrs = (array) $this->getAttrs();
-
-            $class = !empty($attrs['class']) ? $attrs['class'] : '';
-            if ($this->isNowrap()) {
-                $class .= ' nowrap';
-            }
-
-            $arr = array();
-            foreach ($attrs as $key => $value) {
-                $arr[] = $key . '="' . $value . '"';
-            }
-
-            $value = $this->value($row);
-
-            ($value === '' || $value === null) && $value = '&nbsp;';
-            $html = '<td '.($this->getAlign() ? 'align="'.$this->getAlign().'"': '').' ' . ($class ? 'class="' . trim($class) . '"' : '') . ' ' . join(' ', $arr) . '>' . $value . '</td>';
-        }
-
-        return $html;
-    }
+//    public function render($row = array())
+//    {
+//
+//
+//        $html = '';
+//        if ($this->isHidden() == false) {
+//            $attrs = (array) $this->getAttrs();
+//
+//            $class = !empty($attrs['class']) ? $attrs['class'] : '';
+//            if ($this->isNowrap()) {
+//                $class .= ' nowrap';
+//            }
+//
+//            $arr = array();
+//            foreach ($attrs as $key => $value) {
+//                $arr[] = $key . '="' . $value . '"';
+//            }
+//
+//            $value = $this->value($row);
+//
+//            ($value === '' || $value === null) && $value = '&nbsp;';
+//            $html = '<td ' . ($this->getAlign() ? 'align="' . $this->getAlign() . '"' : '') . ' ' . ($class ? 'class="' . trim($class) . '"' : '') . ' ' . join(' ', $arr) . '>' . $value . '</td>';
+//        }
+//
+//
+//        $this->get
+//
+//        $loader = new \Twig_Loader_Filesystem(dirname(dirname(__FILE__)) . '/Resources/views');
+//        $twig   = new \Twig_Environment($loader);
+//        return $twig->render('column.html.twig', array('value' => $value));
+//
+//        return $html;
+//    }
 
     /**
      * Get value of column
+     *
      * @param array|object $row
      *
      * @return string
      */
-    protected function value($row)
+    public function getValue()
     {
-        //получение значения
-        $value = $this->getValueFromRow($row, $this->dataIndex);
-        //если колонка выступает ссылкой
+        //get value
+        $value = $this->getValueFromRow($this->getData(), $this->dataIndex);
+
+        //render link
         if ($url = $this->getUrl()) {
-            $href = is_array($url) ? $url['href'] : $url;
+            $href   = is_array($url) ? $url['href'] : $url;
             $target = is_array($url) && !empty($url['target']) ? $url['target'] : '';
 
             $href = $href . (strpos($href, '?') === false ? '?' : '&') . 'return=' . urlencode($this->getGrid()->getUrl());
@@ -566,7 +538,7 @@ class Column extends ObserverAbstract implements RenderInterface
     {
         if (!empty($key)) {
             $dataIndex = explode('.', $key);
-            $value = $row;
+            $value     = $row;
             foreach ($dataIndex as $index) {
                 if (empty($value)) {
                     break;
@@ -596,16 +568,5 @@ class Column extends ObserverAbstract implements RenderInterface
         }
 
         return $value;
-    }
-
-    /**
-     * Получение значения для колонки
-     * @param array $row строка
-     *
-     * @return array
-     */
-    public function getValue($row)
-    {
-        return $this->value($row);
     }
 }

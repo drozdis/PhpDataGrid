@@ -40,6 +40,14 @@ class Button implements RenderInterface
     protected $icon = '';
 
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return 'Toolbar/button.html.twig';
+    }
+
+    /**
      * @param null $callback
      */
     public function setCallback($callback)
@@ -133,17 +141,5 @@ class Button implements RenderInterface
     public function getIcon()
     {
         return $this->icon;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function render()
-    {
-        if ($icon = $this->getIcon()) {
-            $icon = '<i class="icon-' . $icon . ' icon-white"></i>';
-        }
-
-        return '<button data-toggle="tooltip" data-original-title="' . $this->getHint() . '" class="btn btn-sm ' . $this->getClass() . '" onclick="' . $this->getCallback() . '">' . ($icon ? $icon . ' ' : '') . $this->getTitle() . '</button>';
     }
 }

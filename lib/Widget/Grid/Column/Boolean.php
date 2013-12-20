@@ -11,8 +11,8 @@ class Boolean extends Column
     /**
      * {@inheritdoc}
      */
-    protected function value($row)
+    public function getValue()
     {
-        return parent::value($row) > 0 ? 'yes' : 'no';
+        return parent::getValue() > 0 ? 'yes' : 'no';
     }
 }

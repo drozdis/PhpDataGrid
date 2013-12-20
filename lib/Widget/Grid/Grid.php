@@ -21,24 +21,6 @@ class Grid extends AbstractWidget
     public $selection = false;
 
     /**
-     * Конфигурационные опиции
-     * @var array
-     */
-    protected $template =
-        '<div class="grid_ct">
-            <div id="{{id}}">
-                {{topToolbar}}
-                <table class="table table-striped table-bordered table-condensed">
-                {{header}}
-                {{filters}}
-                {{body}}
-                </table>
-                {{bottomToolbar}}
-                {{footer}}
-            </div>
-        </div>';
-
-    /**
      * @var \Widget\Grid\Column\Column[]
      */
     protected $columns = array();
@@ -131,12 +113,6 @@ class Grid extends AbstractWidget
     protected $autoLoad = false;
 
     /**
-     * @var bool
-     */
-    protected $isAjax = false;
-
-
-    /**
      * {@inheritdoc}
      */
     public function __construct()
@@ -146,6 +122,14 @@ class Grid extends AbstractWidget
 
         //доп. данные
         $this->setParams($this->getUrlParams('params', true));
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return 'grid.html.twig';
     }
 
     /**
@@ -235,23 +219,11 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * @param boolean $isAjax
-     *
-     * @return $this
-     */
-    public function setIsAjax($isAjax)
-    {
-        $this->isAjax = $isAjax;
-
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
-    public function hasIsAjax()
+    public function isAjax()
     {
-        return $this->isAjax;
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
 
     /**
@@ -545,55 +517,55 @@ class Grid extends AbstractWidget
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function initialHtml()
-    {
-        $this->reorderColumns();
-
-        $rendered = array(
-            'id' => $this->name,
-            'header' => $this->renderHeader(),
-            'filters' => $this->renderFilters(),
-            'body' => $this->renderBody(),
-            'footer' => $this->renderFooter(),
-        );
-
-        if ($topToolbar = $this->getTopToolbar()) {
-            $rendered['topToolbar'] = $topToolbar->render();
-        }
-        if ($bToolbar = $this->getBottomToolbar()) {
-            $rendered['bottomToolbar'] = $bToolbar->render();
-        }
-
-        $html = $this->getTemplate();
-        foreach ($rendered as $key => $value) {
-            $html = str_replace('{{' . $key . '}}', $value, $html);
-        }
-
-        //json configuration
-        $json = json_encode(array(
-            'id' => $this->name,
-            'url' => $this->getUrl(array('page' => true)),
-            'baseUrl' => $this->getBaseUrl(),
-            'replaceUrl' => $this->isReplaceUrl(),
-            'autoLoad' => $this->isAutoLoad(),
-            'uriDelimeter' => $this->uriDelimeter
-        ));
-        $js = 'var ' . $this->getJavascriptObject() . ';
-             $(function () {
-                if (typeof(' . $this->getJavascriptObject() . ') == "undefined") {
-                    ' . $this->getJavascriptObject() . ' = new Widget.Grid(' . $json . ');
-                }' . '
-             });';
-        $this->getResourceManager()->addJavascript($js);
-
-        //remove unused places
-        $html = preg_replace('#{{[\w\w]+}}#', '', $html);
-
-        return $html;
-    }
+//    /**
+//     * {@inheritdoc}
+//     */
+//    public function initialHtml()
+//    {
+//        $this->reorderColumns();
+//
+//        $rendered = array(
+//            'id' => $this->name,
+//            'header' => $this->renderHeader(),
+//            'filters' => $this->renderFilters(),
+//            'body' => $this->renderBody(),
+//            'footer' => $this->renderFooter(),
+//        );
+//
+//        if ($topToolbar = $this->getTopToolbar()) {
+//            $rendered['topToolbar'] = $topToolbar->render();
+//        }
+//        if ($bToolbar = $this->getBottomToolbar()) {
+//            $rendered['bottomToolbar'] = $bToolbar->render();
+//        }
+//
+//        $html = $this->getTemplate();
+//        foreach ($rendered as $key => $value) {
+//            $html = str_replace('{{' . $key . '}}', $value, $html);
+//        }
+//
+//        //json configuration
+//        $json = json_encode(array(
+//            'id' => $this->name,
+//            'url' => $this->getUrl(array('page' => true)),
+//            'baseUrl' => $this->getBaseUrl(),
+//            'replaceUrl' => $this->isReplaceUrl(),
+//            'autoLoad' => $this->isAutoLoad(),
+//            'uriDelimeter' => $this->uriDelimeter
+//        ));
+//        $js = 'var ' . $this->getJavascriptObject() . ';
+//             $(function () {
+//                if (typeof(' . $this->getJavascriptObject() . ') == "undefined") {
+//                    ' . $this->getJavascriptObject() . ' = new Widget.Grid(' . $json . ');
+//                }' . '
+//             });';
+//        $this->getResourceManager()->addJavascript($js);
+//
+//        //remove unused places
+//        $html = preg_replace('#{{[\w\w]+}}#', '', $html);
+//
+//        return $html;
+//    }
 
     /**
      * Reorder columns by position ($column->getPosition())
@@ -620,140 +592,6 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * Render grid header
-     *
-     * @return Grid
-     */
-    protected function renderHeader()
-    {
-        $html = '<colgroup>';
-        if ($this->selection !== false) {
-            $html .= '<col width="20" />';
-        }
-        foreach ($this->columns as &$column) {
-            $class = '';
-            if ($column->isHidden()) {
-                continue;
-            }
-            $html .= '<col' . ($column->getWidth() ? ' width="' . $column->getWidth() . '"' : '') . ' ' . ($class ? ' class="' . $class . '"' : '') . '/>';
-        }
-
-        //??????? ????????
-        if (!empty($this->actions)) {
-            $html .= '<col style="width: ' . (count($this->actions) * 30) . 'px;" />';
-        }
-        $html .= '</colgroup>';
-
-        $html .= '<tr class="headings">';
-        if ($this->selection !== false) {
-            $html .= '<th><span class="nobr"><input type="checkbox" data-role="check-all" value="' . $this->getStorage()->getCount() . '" onclick="' . $this->getJavascriptObject() . '.checkAll(\'selected[]\', this);"/></span></th>';
-        }
-
-        foreach ($this->columns as $name => &$column) {
-            $class = '';
-            if ($column->isHidden()) {
-                continue;
-            }
-            $html .= '<th data-name="' . $column->getName() . '" ' . ($class ? ' class="' . $class . '"' : '') . '>';
-
-            if ($column->isSortable()) {
-                $class = 'no-sort';
-                if (($dir = $this->getStorage()->isOrder($column->getField())) !== false) {
-                    $class = 'sort-' . $dir;
-                }
-                $html .= '<div class="sort-block ' . $class . '">
-                            <div class="s-sort-wrap">
-                                <a rel="nofollow" data-toggle="tooltip" title="' . $column->getHint() . '" class="s-sort" href="' . $this->url(array('order' => array($name => 'add'))) . '" onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;">' . $column->getTitle() . '<span></span></a>
-                            </div>
-                            ' . ($class !== 'not-sort' ? '<a rel="nofollow" href="' . $this->url(array('order' => array($name => 'remove'))) . '" ' . ($this->isAllowMultipleOrdering() ? 'class="s-close"' : '') . ' onclick="' . $this->getJavascriptObject() . '.load(this.href); return false;"></a>' : '') . '
-                          </div>';
-            } else {
-                $html .= '<span data-toggle="tooltip" title="' . $column->getHint() . '">' . $column->getTitle() . '</span>';
-            }
-            $html .= '</th>';
-        }
-
-        //??????? ????????
-        if (!empty($this->actions)) {
-            $html .= '<th><span class="nobr"></span></th>';
-        }
-
-        $html .= '</tr>';
-
-        return $html;
-    }
-
-    /**
-     * @return string
-     */
-    protected function renderFilters()
-    {
-        $flag = false;
-        $columns = $this->getColumns();
-        foreach ($columns as &$column) {
-            if (!$column->isHidden() && $column->getFilter() && $column->isFilterable()) {
-                $flag = true;
-            }
-        }
-
-        $html = '';
-        if ($flag) {
-            $html .= '<tr class="filter">';
-            if ($this->isSelection() !== false) {
-                $html .= '<td></td>';
-            }
-
-            foreach ($columns as &$column) {
-                if ($column->isHidden()) {
-                    continue;
-                }
-                if ($column->getFilter() && $column->isFilterable()) {
-                    $html .= '<td><div class="filter-container">' . $column->getFilter()->render() . '</div></td>';
-                } else {
-                    $html .= '<td></td>';
-                }
-            }
-            if ($this->getActions()) {
-                $html .= '<td></td>';
-            }
-            $html .= '</tr>';
-        }
-
-        return $html;
-    }
-
-    /**
-     * Render body of grid
-     *
-     * @return string
-     */
-    protected function renderBody()
-    {
-        $html = '';
-        $data = $this->getStorage()->getData();
-        if (!empty($data)) {
-            foreach ($data as $i => $row) {
-                $html .= $this->renderTr($row, $i);
-            }
-            $html .= $this->renderSummary();
-        } else {
-            $html .= '<tr><td colspan="' . (count($this->columns) + 2) . '" style="padding: 10px; text-align: center;">&nbsp;</td></tr>';
-        }
-
-        return $html;
-    }
-
-    /**
-     * Rendering footer of the table
-     *
-     * @return string
-     */
-    protected function renderFooter()
-    {
-        return '';
-    }
-
-    /**
      * @return \Widget\Grid\Toolbar\Toolbar
      */
     public function getBottomToolbar()
@@ -762,10 +600,9 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ?????? ?????, ???? ?????? ??? ??????
-     * @param \Widget\Grid\Toolbar\Toolbar|array $toolbar
+     * @param Toolbar $toolbar
      *
-     * @return Grid
+     * @return $this
      */
     public function setBottomToolbar(\Widget\Grid\Toolbar\Toolbar $toolbar)
     {
@@ -776,24 +613,6 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return $this->template;
-    }
-
-    /**
-     * @param string $template
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-    }
-
-    /**
-     * ??? ? ?????? ??????????, ????????
-     *
      * @param array $mixer
      *
      * @return string
@@ -812,7 +631,6 @@ class Grid extends AbstractWidget
     }
 
     /**
-     * ??????? ???
      * @param string $url
      *
      * @return Grid
@@ -1047,7 +865,7 @@ class Grid extends AbstractWidget
 
         //render coulumns
         foreach ($this->columns as &$column) {
-            $html .= $column->render($row);
+            $html .= $column->setData($row)->render();
         }
 
         //render actions
@@ -1138,18 +956,21 @@ class Grid extends AbstractWidget
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function render()
-    {
-        $html = parent::render();
 
-        //save state
-        $this->saveState();
 
-        return $html;
-    }
+//
+//    /**
+//     * {@inheritdoc}
+//     */
+//    public function render()
+//    {
+//        $html = parent::render();
+//
+//        //save state
+//        $this->saveState();
+//
+//        return $html;
+//    }
 
     /**
      * ?????????? ?????????

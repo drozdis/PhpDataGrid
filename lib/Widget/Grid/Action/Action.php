@@ -41,6 +41,14 @@ class Action extends AbstractWidget
     protected $grid = null;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return 'Action/action.html.twig';
+    }
+
+    /**
      * @param \Widget\Grid\Grid $grid
      */
     public function setGrid($grid)
@@ -69,25 +77,19 @@ class Action extends AbstractWidget
     }
 
     /**
-     * @param object|array $row
-     *
      * @return string
      */
-    public function getHref($row = null)
+    public function getHref()
     {
-        if ($row == null) {
-            return $this->href;
-        }
-
         $href = $this->href;
         if (!$href) {
             $arr = explode('?', str_replace('/view', '', $this->getGrid()->getBaseUrl()));
-            $arr[0] = rtrim($arr[0], '/') . '/' . $this->getName() . '/' . Helper::getValue($row, $this->getGrid()->getStorage()->getIdField());
+            $arr[0] = rtrim($arr[0], '/') . '/' . $this->getName() . '/' . Helper::getValue($this->getCurrentRow(), $this->getGrid()->getStorage()->getIdField());
             $href = join('?', $arr);
         } else {
             if (preg_match_all('#{{([\d\w_]+)}}#', $href, $m)) {
                 foreach ($m[1] as $key) {
-                    $href = str_replace('{{' . $key . '}}', Helper::getValue($row, $key), $href);
+                    $href = str_replace('{{' . $key . '}}', Helper::getValue($this->getCurrentRow(), $key), $href);
                 }
             }
         }
@@ -156,7 +158,7 @@ class Action extends AbstractWidget
      * @param object|array $row
      * @return Action
      */
-    public function setCurrentRow($row)
+    public function setData($row)
     {
         $this->row = $row;
 
@@ -170,13 +172,4 @@ class Action extends AbstractWidget
     {
         return $this->row;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function initialHtml()
-    {
-        return '<a rel="nofollow" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="' . $this->getHint() . '" href="' . $this->getHref($this->getCurrentRow()) . '"><i class="glyphicon glyphicon-' . $this->getIcon() . '"></i>'.($this->getTitle() ? ' '.$this->getTitle() : '').'</a>';
-    }
-
 }

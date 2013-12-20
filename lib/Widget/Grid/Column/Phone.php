@@ -16,9 +16,9 @@ class Phone extends Column
     /**
      * {@inheritdoc}
      */
-    protected function value($row)
+    public function getValue()
     {
-        return $this->formatPhone(parent::value($row));
+        return $this->formatPhone(parent::getValue());
     }
 
     /**

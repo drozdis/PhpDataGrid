@@ -1,18 +1,17 @@
 <?php
 namespace Widget\Grid\Filter;
 
+use Widget\AbstractRenderer;
 use Widget\Grid\Column\Column;
 use Widget\Grid\Storage\AbstractStorage;
-use Widget\ObserverAbstract;
 use Widget\ObserverListener;
-use Widget\RenderInterface;
 
 /**
- * Клас фильтра колонки
+ * Class AbstractFilter
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-abstract class AbstractFilter extends ObserverAbstract implements RenderInterface
+abstract class AbstractFilter extends AbstractRenderer
 {
     /**
      * @var Column
@@ -21,6 +20,7 @@ abstract class AbstractFilter extends ObserverAbstract implements RenderInterfac
 
     /**
      * Тип фильтра (integer|string)
+     *
      * @var string
      */
     protected $type = 'string';
@@ -130,7 +130,7 @@ abstract class AbstractFilter extends ObserverAbstract implements RenderInterfac
      */
     public function setColumn(Column $column)
     {
-        $filter = $this;
+        $filter       = $this;
         $listenerLoad = new ObserverListener(function ($store) use ($filter) {
             $filter->apply($store);
         });
@@ -157,11 +157,6 @@ abstract class AbstractFilter extends ObserverAbstract implements RenderInterfac
     {
         return $this->getColumn()->getGrid();
     }
-
-    /**
-     * @return string
-     */
-    abstract public function render();
 
     /**
      * @param AbstractStorage $store

@@ -271,6 +271,16 @@ abstract class AbstractStorage extends ObserverAbstract
     }
 
     /**
+     * @param mixed $row
+     *
+     * @return integer
+     */
+    public function getId($row)
+    {
+        return \Widget\Helper::getValue($row, $this->idField);
+    }
+
+    /**
      * Сортировка данных
      * @return AbstractStorage
      */

@@ -2,7 +2,7 @@
 namespace Widget\Grid\Filter;
 
 /**
- * Клас фильтра колонки (Выпадающий список)
+ * Select filter
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
@@ -34,6 +34,14 @@ class SelectFilter extends TextFilter
      * @var callable
      */
     protected $generator;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return 'Filter/select.html.twig';
+    }
 
     /**
      * <code>
@@ -70,6 +78,14 @@ class SelectFilter extends TextFilter
     }
 
     /**
+     * @return boolean
+     */
+    public function isMultiselect()
+    {
+        return $this->multiselect;
+    }
+
+    /**
      * @param boolean $empty
      *
      * @return SelectFilter
@@ -79,6 +95,14 @@ class SelectFilter extends TextFilter
         $this->empty = $empty;
 
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEmpty()
+    {
+        return $this->empty;
     }
 
     /**
@@ -94,34 +118,22 @@ class SelectFilter extends TextFilter
     }
 
     /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function render()
     {
-        $column = $this->getColumn()->getName();
-        $grid = $this->getGrid();
-
         if (!empty($this->generator) && is_callable($this->generator)) {
             $this->options = call_user_func($this->generator, array($this->value));
         }
 
-        if ($this->multiselect) {
-            $html = '<div class="field-100"><div class="multiselect nowrap" style="height:60px;">';
-            foreach ($this->options as $key => $value) {
-                $html .= '<label class="checkbox"><input name="' . $column . '[]" onclick="' . $grid->getJavascriptObject() . '.doFilter();" type="checkbox" id="' . $column . $key . '" value="' . $key . '" ' . ($this->getValue() !== null && $this->getValue() !== '' && in_array($key, (array) $this->getValue()) ? 'checked="checked"' : '') . ' /> ' . $value . '</label>';
-            }
-            $html .= '</div></div>';
-        } else {
-            $html = '<div class="field-100">';
-            $html .= '<select class="form-control" name="' . $column . '" onchange="' . $grid->getJavascriptObject() . '.doFilter();">';
-            $this->empty && $html .= '<option value=""></option>';
-            foreach ($this->options as $key => $value) {
-                $html .= '<option value="' . $key . '" ' . ($this->getValue() !== null && $this->getValue() !== '' && in_array($key, (array) $this->getValue()) ? 'selected="selected"' : '') . '>' . $value . '</option>';
-            }
-            $html .= '</select>';
-            $html .= '</div>';
-        }
-
-        return $html;
+        return parent::render();
     }
 }

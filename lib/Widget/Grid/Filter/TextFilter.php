@@ -2,7 +2,7 @@
 namespace Widget\Grid\Filter;
 
 /**
- * Text field
+ * Text filter
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
@@ -11,15 +11,8 @@ class TextFilter extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    public function render()
+    public function getTemplate()
     {
-        $column = $this->getColumn()->getName();
-        $grid = $this->getGrid();
-
-        $html = '<div class="field-100">';
-        $html .= '<input class="form-control no-changes" type="text" name="' . $column . '" value="' . $this->getValue() . '" onkeypress="' . $grid->getJavascriptObject() . '.doFilterEnter(event);" />';
-        $html .= '</div>';
-
-        return $html;
+        return 'Filter/text.html.twig';
     }
 }

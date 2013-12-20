@@ -3,19 +3,16 @@ namespace Widget\Grid\Column;
 
 /**
  * Image column
+ *
+ * @package Widget\Grid\Column
  */
 class Image extends Column
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    protected function value($row)
+    public function getTemplate()
     {
-        $value = parent::value($row);
-        if (!empty($value)) {
-            return '<img src="' . $value . '" />';
-        }
-
-        return '';
+        return 'Column/image.html.twig';
     }
 }

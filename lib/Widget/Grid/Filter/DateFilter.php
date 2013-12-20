@@ -13,31 +13,9 @@ class DateFilter extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    public function render()
+    public function getTemplate()
     {
-        $column = $this->getColumn()->getName();
-        $grid   = $this->getGrid();
-        $value  = $this->getValue();
-
-        $html = '<input type="text" class="form-control date" value="' . $value . '" id="' . $column . '" name="' . $column . '" />';
-
-        $js = '$(function(){
-            $( "#' . $column . '" ).datepicker({
-                changeMonth: true,
-                dateFormat: "dd.mm.yy",
-                onSelect : function() {
-                    ' . $grid->getJavascriptObject() . '.doFilter();
-                }
-            });
-        });';
-
-        if ($grid->hasIsAjax()) {
-            $html .= '<script type="text/javascript">' . $js . '</script>';
-        } else {
-            $grid->getResourceManager()->addJavascript($js);
-        }
-
-        return $html;
+        return 'Filter/dange.html.twig';
     }
 
     /**

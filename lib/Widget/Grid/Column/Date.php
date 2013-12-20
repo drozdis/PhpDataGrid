@@ -2,7 +2,7 @@
 namespace Widget\Grid\Column;
 
 /**
- * Колонка дата
+ * Date column
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
@@ -16,7 +16,7 @@ class Date extends Column
     /**
      * @param string $format
      *
-     * @return Date
+     * @return $this
      */
     public function setFormat($format)
     {
@@ -36,9 +36,9 @@ class Date extends Column
     /**
      * {@inheritdoc}
      */
-    protected function value($row)
+    public function getValue()
     {
-        $value = parent::value($row);
+        $value = parent::getValue();
         if (!empty($value)) {
             if (!is_object($value)) {
                 $value = new \DateTime($value);

@@ -11,8 +11,8 @@ class Price extends Column
     /**
      * {@inheritdoc}
      */
-    protected function value($row)
+    public function getValue()
     {
-        return preg_replace("/(?<=\d)(?=(\d{3})+(?!\d))/", " ", sprintf('%01.2f', (float) parent::value($row)));
+        return preg_replace("/(?<=\d)(?=(\d{3})+(?!\d))/", " ", sprintf('%01.2f', (float) parent::getValue()));
     }
 }

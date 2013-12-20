@@ -1,15 +1,14 @@
 <?php
 namespace Widget\Grid\Toolbar;
 
+use Widget\AbstractRenderer;
 use Widget\Grid\Grid;
 use Widget\RenderInterface;
 
 /**
- * Клас "Тулбар"
- *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-class Toolbar implements RenderInterface
+class Toolbar extends AbstractRenderer
 {
     /**
      * @var \Widget\Grid\Grid
@@ -34,58 +33,9 @@ class Toolbar implements RenderInterface
     /**
      * {@inheritdoc}
      */
-    public function render()
+    public function getTemplate()
     {
-        $count = $this->getGrid()->getStorage()->getCount();
-        $html = '<div class="grid-toolbar clearfix">';
-        $html .= '<div class="pull-left paginator">';
-        $html .= '<button data-toggle="tooltip" title="Обновить" id="refresh" onclick="' . $this->getGrid()->getJavascriptObject() . '.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="icon-refresh icon-white"></i></button>';
-        $html .= '<div id="number-in-page" class="pull-left">';
-        if ($this->getGrid()->isSelection()) {
-            $html .= 'Всего: <strong data-role="selected">0</strong>&nbsp;&Iota;&nbsp;';
-        }
-        $html .= 'Rows: <strong>' . $count . '</strong>';
-        $html .= '</div>';
-
-        $html .= '<div class="pull-left">';
-        foreach ($this->getElements() as $element) {
-            $html .= $element->render();
-        }
-        $html .= '</div>';
-        $html .= '</div>';
-
-        $html .= '<div class="pull-right">';
-
-        //actions
-        $actions = $this->getActions();
-        if (!empty($actions)) {
-            $html .= '<div class="pull-left">Actions:&nbsp;';
-            $html .= '<select class="additionally" style="margin-right: 10px; max-width:150px;" name="' . $this->getGrid()->getName() . '_action">';
-            $html .= '<option></option>';
-            foreach ($actions as $key => &$action) {
-                $html .= '<option value="' . $key . '" data-json="' . $action->toJson() . '">' . $action->getTitle() . '</option>';
-            }
-            $html .= '</select>';
-            $html .= '</div>';
-
-            $applyAction = new Button();
-            $applyAction->setTitle('Выполнить');
-            $applyAction->setCallback($this->getGrid()->getJavascriptObject() . '.apply(\'' . $this->getGrid()->getName() . '\'); return false;');
-            $applyAction->setIcon('check');
-            $applyAction->setHint('Выполнить выбранное действие');
-            $this->addButton($applyAction, 0);
-        }
-
-        //buttons
-        $html .= '<div class="btn-group pull-right">';
-        foreach ($this->getButtons() as $button) {
-            $html .= $button->render();
-        }
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
+        return 'Toolbar/toolbar.html.twig';
     }
 
     /**

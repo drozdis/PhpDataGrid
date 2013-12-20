@@ -7,13 +7,8 @@ namespace Widget;
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-abstract class AbstractWidget extends ObserverAbstract implements RenderInterface
+abstract class AbstractWidget extends AbstractRenderer
 {
-    /**
-     * @var string
-     */
-    private static $resourceManagerClass = '\Widget\ResourceManager';
-
     /**
      * Уникальный идентификатор
      * @var string
@@ -27,20 +22,9 @@ abstract class AbstractWidget extends ObserverAbstract implements RenderInterfac
     protected $parent = null;
 
     /**
-     * Декораторы
-     * @var AbstractDecorator[]
-     */
-    protected $decorators = array();
-
-    /**
      * @var AbstractExtension[]
      */
     protected $extensions = array();
-
-    /**
-     * @var Null|Integer
-     */
-    protected $width = null;
 
     /**
      * @var ResourceManagerInterface
@@ -120,135 +104,15 @@ abstract class AbstractWidget extends ObserverAbstract implements RenderInterfac
     }
 
     /**
-     * @return Integer
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * @param Integer $width
-     *
-     * @return AbstractWidget
-     */
-    public function setWidth($width)
-    {
-        $this->width = $width;
-
-        return $this;
-    }
-
-    /**
-     * @param AbstractDecorator $decorator
-     *
-     * @return AbstractWidget
-     */
-    public function addDecorator(AbstractDecorator $decorator)
-    {
-        $this->decorators[] = $decorator;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->render();
-    }
-
-    /**
-     * Render
-     * @return string
-     */
-    public function render()
-    {
-        try {
-            //event
-            $this->fireEvent('before_render', array('widget' => $this));
-
-            $content = $this->initialHtml();
-            foreach ($this->getDecorators() as $name) {
-                $decorator = $this->createDecorator($name);
-                /* @var $decorator AbstractDecorator */
-                $decorator->setElement($this);
-                $content = $decorator->render($content);
-            }
-            //event
-            $this->fireEvent('after_render', array('widget' => $this));
-        } catch (\Exception $e) {
-            $content = $e . '';
-        }
-
-        return $content;
-    }
-
-    /**
-     * Базовый HTML для отображения, на который будут накладываться декораторы
-     * @return string
-     */
-    protected function initialHtml()
-    {
-        return '';
-    }
-
-    /**
-     * @return array
-     */
-    public function getDecorators()
-    {
-        return $this->decorators;
-    }
-
-    /**
-     * @param array $decorators
-     *
-     * @return AbstractWidget
-     */
-    public function setDecorators($decorators)
-    {
-        $this->decorators = $decorators;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return AbstractDecorator
-     */
-    public function createDecorator($name)
-    {
-        return new $name();
-    }
-
-    /**
      * @return \Widget\ResourceManagerInterface
      */
     public function getResourceManager()
     {
         if ($this->resourceManager === null) {
-            $class = self::getResourceManagerClass();
-            $this->resourceManager = new $class();
+            $this->resourceManager = new ResourceManager();
         }
 
         return $this->resourceManager;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getResourceManagerClass()
-    {
-        return self::$resourceManagerClass;
-    }
-
-    /**
-     * @param string $resourceManagerClass
-     */
-    public static function setResourceManagerClass($resourceManagerClass)
-    {
-        self::$resourceManagerClass = $resourceManagerClass;
     }
 
     /**
