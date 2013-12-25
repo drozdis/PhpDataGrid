@@ -517,56 +517,6 @@ class Grid extends AbstractWidget
         return $this;
     }
 
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function initialHtml()
-//    {
-//        $this->reorderColumns();
-//
-//        $rendered = array(
-//            'id' => $this->name,
-//            'header' => $this->renderHeader(),
-//            'filters' => $this->renderFilters(),
-//            'body' => $this->renderBody(),
-//            'footer' => $this->renderFooter(),
-//        );
-//
-//        if ($topToolbar = $this->getTopToolbar()) {
-//            $rendered['topToolbar'] = $topToolbar->render();
-//        }
-//        if ($bToolbar = $this->getBottomToolbar()) {
-//            $rendered['bottomToolbar'] = $bToolbar->render();
-//        }
-//
-//        $html = $this->getTemplate();
-//        foreach ($rendered as $key => $value) {
-//            $html = str_replace('{{' . $key . '}}', $value, $html);
-//        }
-//
-//        //json configuration
-//        $json = json_encode(array(
-//            'id' => $this->name,
-//            'url' => $this->getUrl(array('page' => true)),
-//            'baseUrl' => $this->getBaseUrl(),
-//            'replaceUrl' => $this->isReplaceUrl(),
-//            'autoLoad' => $this->isAutoLoad(),
-//            'uriDelimeter' => $this->uriDelimeter
-//        ));
-//        $js = 'var ' . $this->getJavascriptObject() . ';
-//             $(function () {
-//                if (typeof(' . $this->getJavascriptObject() . ') == "undefined") {
-//                    ' . $this->getJavascriptObject() . ' = new Widget.Grid(' . $json . ');
-//                }' . '
-//             });';
-//        $this->getResourceManager()->addJavascript($js);
-//
-//        //remove unused places
-//        $html = preg_replace('#{{[\w\w]+}}#', '', $html);
-//
-//        return $html;
-//    }
-
     /**
      * Reorder columns by position ($column->getPosition())
      *
@@ -847,52 +797,6 @@ class Grid extends AbstractWidget
         return $this;
     }
 
-    /**
-     * Render grid tr
-     *
-     * @param array   $row
-     * @param integer $index
-     *
-     * @return string
-     */
-    protected function renderTr($row, $index = 0)
-    {
-        $idField = $this->getStorage()->getIdField();
-        $html = $index % 2 == 0 ? '<tr data-identifier="' . Helper::getValue($row, $idField) . '" class="even">' : '<tr data-identifier="' . Helper::getValue($row, $idField) . '">';
-        if ($this->isSelection()) {
-            $html .= '<td align="center"><input type="checkbox" name="selected[]" value="' . Helper::getValue($row, $idField) . '" /></td>';
-        }
-
-        //render coulumns
-        foreach ($this->columns as &$column) {
-            $html .= $column->setData($row)->render();
-        }
-
-        //render actions
-        if (!empty($this->actions)) {
-            $actions = '<div class="btn-group">';
-            foreach ($this->actions as $action) {
-                $actions .= $action->setCurrentRow($row)->render();
-            }
-            $actions .= '</div>';
-            $html .= '<td class="last" align="center">' . $actions . '</td>';
-        }
-
-        $html .= '</tr>';
-
-        return $html;
-    }
-
-    /**
-     * Rendering summary of the table
-     *
-     * @return string
-     */
-    protected function renderSummary()
-    {
-        return '';
-    }
-
     protected function urlValue($param, $value)
     {
         //????????
@@ -956,24 +860,20 @@ class Grid extends AbstractWidget
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function render()
+    {
+        $html = parent::render();
 
+        //save state
+        $this->saveState();
 
-//
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function render()
-//    {
-//        $html = parent::render();
-//
-//        //save state
-//        $this->saveState();
-//
-//        return $html;
-//    }
+        return $html;
+    }
 
     /**
-     * ?????????? ?????????
      * @return Grid
      */
     public function saveState()

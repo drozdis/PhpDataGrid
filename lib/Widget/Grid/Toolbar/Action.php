@@ -99,11 +99,9 @@ class Action
     }
 
     /**
-     * @param object|array|null $row
-     *
      * @return string
      */
-    public function getHref($row = null)
+    public function getHref()
     {
         return $this->href;
     }

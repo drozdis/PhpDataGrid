@@ -27,11 +27,6 @@ abstract class AbstractWidget extends AbstractRenderer
     protected $extensions = array();
 
     /**
-     * @var ResourceManagerInterface
-     */
-    private $resourceManager = null;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -101,18 +96,6 @@ abstract class AbstractWidget extends AbstractRenderer
         $this->name = $name;
 
         return $this;
-    }
-
-    /**
-     * @return \Widget\ResourceManagerInterface
-     */
-    public function getResourceManager()
-    {
-        if ($this->resourceManager === null) {
-            $this->resourceManager = new ResourceManager();
-        }
-
-        return $this->resourceManager;
     }
 
     /**

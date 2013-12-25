@@ -69,7 +69,7 @@ class ColumnsDecorator extends AbstractDecorator
                 });
                 $( "#sortable1, #sortable2").disableSelection();
             });';
-        $this->getElement()->getResourceManager()->addJavascript($js);
+        //$this->getElement()->getResourceManager()->addJavascript($js);
 
         return str_replace('<div class="grid_ct">', '<div class="grid_ct">' . $dialog, $content);
     }

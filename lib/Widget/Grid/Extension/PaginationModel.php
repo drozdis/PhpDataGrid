@@ -3,14 +3,14 @@ namespace Widget\Grid\Extension;
 
 use Widget\Grid\Storage\AbstractStorage;
 use Widget\Helper;
-use Widget\RenderInterface;
+use Widget\AbstractRenderer;
 
 /**
  * Class Paginator
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-class PaginationModel implements RenderInterface
+class PaginationModel extends AbstractRenderer
 {
     /**
      * Максимальное к-во на странице
@@ -78,6 +78,14 @@ class PaginationModel implements RenderInterface
     {
         $this->storage = $storage;
         Helper::setConstructorOptions($this, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return 'Extension/pagination.html.twig';
     }
 
     /**
@@ -389,9 +397,9 @@ class PaginationModel implements RenderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function render()
+    protected function initialHtml()
     {
         $this->generatePages();
 
@@ -400,60 +408,6 @@ class PaginationModel implements RenderInterface
             $params[$k] = $v;
         }
 
-        $html = '';
-        if (!empty($params['pageCount']) && $params['pageCount'] > 1) {
-            $html .=
-                '<div class="pagination-centered">' .
-                '<ul class="pagination pagination-sm">';
-            if (isset($params['previous'])) {
-                $html .= $this->renderHref($params['previous']['url'], '', '«');
-            } else {
-                $html .= $this->renderHref(null, 'disabled', '«');
-            }
-
-            if ($params['first']['number'] != $params['firstPageInRange']['number']) {
-                $html .= $this->renderHref($params['first']['url'], $params['current'] == $params['first']['number'] ? 'active' : '', $params['first']['number']);
-            }
-
-            if (!in_array($params['first']['number'], array($params['firstPageInRange']['number'], $params['firstPageInRange']['number'] - 1))) {
-                $html .= $this->renderHref('', 'disabled', '...');
-            }
-
-            foreach ($params['pagesInRange'] as $page) {
-                $html .= $this->renderHref($page['url'], $params['current'] == $page['number'] ? 'active' : '', $page['number']);
-            }
-
-            if (!in_array($params['last']['number'], array($params['lastPageInRange']['number'], $params['lastPageInRange']['number'] + 1))) {
-                $html .= $this->renderHref('', 'disabled', '...');
-            }
-
-            if ($params['last']['number'] != $params['lastPageInRange']['number']) {
-                $html .= $this->renderHref($params['last']['url'], $params['current'] == $params['last']['number'] ? 'active' : '', $params['last']['number']);
-            }
-
-            if (isset($params['next'])) {
-                $html .= $this->renderHref($params['next']['url'], '', '»');
-            } else {
-                $html .= $this->renderHref(null, 'disabled', '»');
-            }
-            $html .= '</ul>';
-            $html .= '</div>';
-        }
-
-        return $html;
-    }
-
-    /**
-     * @param string $href
-     * @param string $class
-     * @param string $number
-     *
-     * @return string
-     */
-    private function renderHref($href, $class, $number)
-    {
-        $grid = $this->params['grid'];
-
-        return '<li class="' . $class . '"><a  onclick="' . $grid->getJavascriptObject() . '.load(this.href); return false;" onclick="" href="' . ($href ? $href : 'javascript:void(0)') . '">' . $number . '</a></li>';
+        return $this->getRendererEngine()->render($this->getTemplate(), $params + array('element' => $this));
     }
 }
