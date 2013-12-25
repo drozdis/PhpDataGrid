@@ -48,7 +48,7 @@ class Pagination extends AbstractExtension
             $lisener = new ObserverListener(function ($widget) use ($paginator) {
                 $paginator->setURL($widget->getUrl());
             });
-            $this->getWidget()->on('before_render', $lisener);
+            $this->getWidget()->addEventListener('before_render', $lisener);
 
             //страница
             $page = $this->getWidget()->getUrlParams('page');

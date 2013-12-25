@@ -134,7 +134,7 @@ abstract class AbstractFilter extends AbstractRenderer
         $listenerLoad = new ObserverListener(function ($store) use ($filter) {
             $filter->apply($store);
         });
-        $column->getGrid()->getStorage()->on('before_load', $listenerLoad);
+        $column->getGrid()->getStorage()->addEventListener('before_load', $listenerLoad);
 
         //set column
         $this->column = $column;

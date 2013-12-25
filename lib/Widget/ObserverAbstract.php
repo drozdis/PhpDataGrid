@@ -32,7 +32,6 @@ class ObserverAbstract
     }
 
     /**
-     * Сгенерировать событие
      * @param string $name
      * @param array  $params
      */
@@ -47,11 +46,10 @@ class ObserverAbstract
     }
 
     /**
-     * Подписатся на событие
      * @param string           $name
      * @param ObserverListener $listener
      */
-    public function on($name, ObserverListener $listener)
+    public function addEventListener($name, ObserverListener $listener)
     {
         if (empty($this->listeners[$name])) {
             $this->listeners[$name] = array();

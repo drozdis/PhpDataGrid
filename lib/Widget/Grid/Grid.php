@@ -245,7 +245,7 @@ class Grid extends AbstractWidget
                 }
             }
         });
-        $this->getStorage()->on('before_load', $listener);
+        $this->getStorage()->addEventListener('before_load', $listener);
 
         return $this;
     }
@@ -312,7 +312,7 @@ class Grid extends AbstractWidget
                 }
             }
         });
-        $this->getStorage()->on('before_load', $listener);
+        $this->getStorage()->addEventListener('before_load', $listener);
 
         return $this;
     }

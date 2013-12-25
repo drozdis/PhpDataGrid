@@ -31,7 +31,6 @@ abstract class AbstractRenderer extends ObserverAbstract implements RenderInterf
 
     }
 
-
     /**
      * @return string
      */
