@@ -15,8 +15,8 @@
                 'id'           : '{{element.name}}',
                 'url'          : '{{element.url({'page':true})|raw}}',
                 'baseUrl'      : '{{element.baseUrl|raw}}',
-                'replaceUrl'   : {{ element.replaceUrl ? true : false }},
-                'autoLoad'     : {{ element.autoLoad ? true : false }},
+                'replaceUrl'   : {{ element.replaceUrl ? 'true' : 'false' }},
+                'autoLoad'     : {{ element.autoLoad ? 'true' : 'false' }},
                 'uriDelimeter' : '{{element.uriDelimeter}}'
             };
 
