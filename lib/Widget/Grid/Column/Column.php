@@ -463,44 +463,8 @@ class Column extends AbstractRenderer
         return $this->url;
     }
 
-//    public function render($row = array())
-//    {
-//
-//
-//        $html = '';
-//        if ($this->isHidden() == false) {
-//            $attrs = (array) $this->getAttrs();
-//
-//            $class = !empty($attrs['class']) ? $attrs['class'] : '';
-//            if ($this->isNowrap()) {
-//                $class .= ' nowrap';
-//            }
-//
-//            $arr = array();
-//            foreach ($attrs as $key => $value) {
-//                $arr[] = $key . '="' . $value . '"';
-//            }
-//
-//            $value = $this->value($row);
-//
-//            ($value === '' || $value === null) && $value = '&nbsp;';
-//            $html = '<td ' . ($this->getAlign() ? 'align="' . $this->getAlign() . '"' : '') . ' ' . ($class ? 'class="' . trim($class) . '"' : '') . ' ' . join(' ', $arr) . '>' . $value . '</td>';
-//        }
-//
-//
-//        $this->get
-//
-//        $loader = new \Twig_Loader_Filesystem(dirname(dirname(__FILE__)) . '/Resources/views');
-//        $twig   = new \Twig_Environment($loader);
-//        return $twig->render('column.html.twig', array('value' => $value));
-//
-//        return $html;
-//    }
-
     /**
      * Get value of column
-     *
-     * @param array|object $row
      *
      * @return string
      */

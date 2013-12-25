@@ -97,7 +97,7 @@
         <tr class="filter">
             {% for column in element.columns %}
                 {% if (column.hidden == false and column.filter and column.filterable == true) %}
-                    <td><div class="filter-container">{{column.filter.render|raw}}</div></td>
+                    <td><div class="filter-container">{{column.filter.render()|raw}}</div></td>
                 {% else %}
                     <td></td>
                 {% endif %}
