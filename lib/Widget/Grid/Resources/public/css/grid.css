@@ -172,6 +172,10 @@
     margin: 0 0 0 20px;
 }
 
+.grid-toolbar .toolbar-info, .grid-toolbar .pagination-ct {
+   float:left;
+}
+
 .grid-toolbar #number-in-page {
     line-height: 27px;
     margin-left: 5px;

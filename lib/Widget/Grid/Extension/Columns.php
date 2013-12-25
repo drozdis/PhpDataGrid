@@ -1,59 +1,82 @@
 <?php
 namespace Widget\Grid\Extension;
+
 use Widget\AbstractExtension;
 use Widget\Grid\Toolbar\Button;
+use Widget\ObserverListener;
 
 /**
+ * Grid extension for show/hide/reorder columns
+ *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class Columns extends AbstractExtension
 {
     /**
-     * Инициализация плагина
+     * {@inheritdoc}
      */
     public function init()
     {
-        if ($toolbar = $this->getWidget()->getTopToolbar()) {
+        $this->render();
+
+        $columns = $this->getWidget()->getUrlParams('extension-columns');
+        if (!empty($columns)) {
+            $this->apply($columns);
+        }
+    }
+
+    /**
+     * Render extension
+     */
+    private function render()
+    {
+        $grid = $this->getWidget();
+
+        if ($toolbar = $grid->getTopToolbar()) {
             $button = new Button();
-            $button->setHint('Настройка колонок таблицы');
+            $button->setHint('Configure columns');
             $button->setIcon('th-list');
             $button->setCallback("$('#grid-extension-columns').modal()");
             $toolbar->addButton($button);
 
-            $this->getWidget()->addDecorator(new ColumnsDecorator());
+            $listener = new ObserverListener(function ($grid, &$content) {
+                $window = new ColumnsWindow($grid);
+                $content .= $window->render();
+            });
+            $grid->addEventListener('after_render', $listener);
+        }
+    }
+
+    /**
+     * @param array $columns
+     */
+    private function apply($columns)
+    {
+        $grid = $this->getWidget();
+
+        if (!empty($columns['columns'])) {
+            foreach ($columns['columns'] as $i => $name) {
+                $name = str_replace('col-', '', $name);
+                if ($column = $grid->getColumn($name)) {
+                    $column->setHidden(false)->setPosition($i + 1);
+                }
+            }
         }
 
-        //        // ????????? drag'n'drop ???? ???? ?????????? ?? ???????
-//        foreach ($this->getColumns() as $column) {
-//            if ($column instanceof \Widget\Grid\Column\Sorting) {
-//                $column->setHidden(!empty($order));
-//            }
-//        }
-//
-//        //???/???? ???????
-//        $extensionColumns = $this->getUrlParams('extension-columns', false);
-//        if (!empty($extensionColumns['columns'])) {
-//            foreach ($extensionColumns['columns'] as $i => $name) {
-//                $name = str_replace('col-', '', $name);
-//                if ($column = $this->getColumn($name)) {
-//                    $column->setHidden(false)->setPosition($i + 1);
-//                }
-//            }
-//        }
-//        if (!empty($extensionColumns['disabled'])) {
-//            foreach ($extensionColumns['disabled'] as $j => $name) {
-//                $name = str_replace('col-', '', $name);
-//                if ($column = $this->getColumn($name)) {
-//                    $column->setHidden(true)->setPosition($j + count($extensionColumns['columns']) + 1);
-//                }
-//            }
-//        }
-//        if (!empty($extensionColumns['clear'])) {
-//            $i = 1;
-//            foreach ($this->getColumns() as $column) {
-//                $column->setPosition($i++)->setHidden($column->isHidden());
-//            }
-//        }
+        if (!empty($columns['disabled'])) {
+            foreach ($columns['disabled'] as $j => $name) {
+                $name = str_replace('col-', '', $name);
+                if ($column = $grid->getColumn($name)) {
+                    $column->setHidden(true)->setPosition($j + count($columns['columns']) + 1);
+                }
+            }
+        }
 
+        if (!empty($columns['clear'])) {
+            $i = 1;
+            foreach ($this->getColumns() as $column) {
+                $column->setPosition($i++)->setHidden($column->isHidden());
+            }
+        }
     }
 }

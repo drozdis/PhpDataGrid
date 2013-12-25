@@ -3,6 +3,8 @@ namespace Widget;
 
 /**
  * Class AbstractRendererEngine
+ *
+ * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class RendererEngine
 {

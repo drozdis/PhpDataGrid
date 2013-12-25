@@ -12,27 +12,6 @@ use Widget\ObserverListener;
 class Pagination extends AbstractExtension
 {
     /**
-     * @var array
-     */
-    protected $options = array();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function init()

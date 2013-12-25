@@ -6,7 +6,7 @@
     {% set grid = element.grid %}
 
     {% if pageCount > 1 %}
-        <div class="pagination-centered">
+        <div class="pagination-ct">
             <ul class="pagination pagination-sm">
                 {% if (previous) %}
                     {{ _self.renderHref(grid, previous['url'], '', '«') }}

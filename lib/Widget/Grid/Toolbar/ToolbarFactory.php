@@ -14,7 +14,7 @@ class ToolbarFactory
      */
     public static function create($type)
     {
-        $class = __NAMESPACE__.'\\'. ucfirst($type);
+        $class = __NAMESPACE__.'\\'. ucfirst($type).'Toolbar';
         if (!class_exists($class)) {
             throw new \Exception('Unknown type ' . $type);
         }

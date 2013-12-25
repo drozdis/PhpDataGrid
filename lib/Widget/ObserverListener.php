@@ -14,7 +14,7 @@ class ObserverListener
     protected $method = null;
 
     /**
-     * @param callback
+     * @param callable $method
      */
     public function __construct($method)
     {

@@ -10,13 +10,11 @@ namespace Widget;
 abstract class AbstractWidget extends AbstractRenderer
 {
     /**
-     * Уникальный идентификатор
      * @var string
      */
     protected $name = '';
 
     /**
-     * Родитель
      * @var AbstractWidget
      */
     protected $parent = null;
@@ -40,8 +38,7 @@ abstract class AbstractWidget extends AbstractRenderer
     }
 
     /**
-     * Инициализация
-     * @return AbstractWidget
+     * @return $this
      */
     protected function init()
     {
@@ -51,7 +48,7 @@ abstract class AbstractWidget extends AbstractRenderer
     /**
      * @param string|null $name
      *
-     * @return AbstractWidget
+     * @return $this
      */
     public function getParent($name = null)
     {
@@ -69,9 +66,9 @@ abstract class AbstractWidget extends AbstractRenderer
     /**
      * @param AbstractWidget $parent
      *
-     * @return AbstractWidget
+     * @return $this
      */
-    public function setParent($parent)
+    public function setParent(AbstractWidget $parent)
     {
         $this->parent = $parent;
 
@@ -89,7 +86,7 @@ abstract class AbstractWidget extends AbstractRenderer
     /**
      * @param string $name
      *
-     * @return AbstractWidget
+     * @return $this
      */
     public function setName($name)
     {
@@ -107,10 +104,9 @@ abstract class AbstractWidget extends AbstractRenderer
     }
 
     /**
-     * Установить Плагины
      * @param AbstractExtension[] $extensions
      *
-     * @return AbstractWidget
+     * @return $this
      */
     public function setExtensions($extensions)
     {

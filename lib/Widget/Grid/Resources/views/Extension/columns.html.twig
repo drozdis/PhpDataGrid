@@ -1,0 +1,79 @@
+{% block element %}
+    {% set grid = element.grid %}
+
+
+    <div id="grid-extension-columns" class="modal" style="display: none; width:730px;" aria-hidden="true">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3 class="pull-left">Настройка таблицы</h3>
+
+            <div class="clr"></div>
+        </div>
+        <div class="modal-body" style="min-width:700px; width:700px; height:500px;">
+            <div class="alert alert-info">Для настройки таблицы: <br/>1. Перетащите нужные Вам столбцы в поле "Используется"
+                (все столбцы, находящиеся в поле "Скрытые" в таблице отображатся не будут). <br/>2. Задать порядок полей можно
+                перемещением названий столбцов в рамках поля "Используется"
+            </div>
+
+            <div class="col1">
+                <h5>Используются</h5>
+                <ul id="sortable1" class="droptrue nav nav-list bs-docs-sidenav">
+                    {% for column in grid.columns if column.hidden == false %}
+                        <li id="col-{{ column.name }}"><a>{{ column.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="col2">
+                <h5>Скрытые</h5>
+                <ul id="sortable2" class="droptrue nav nav-list bs-docs-sidenav">
+                    {% for column in grid.columns if column.hidden == true %}
+                        <li id="col-{{ column.name }}"><a>{{ column.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a rel="nofollow" data-dismiss="modal" class="btn btn-primary" href="#" onclick="columnExtension.applySorting();">Применить</a>
+            <a rel="nofollow" data-dismiss="modal" class="btn btn-primary" href="#" onclick="columnExtension.clearSorting();">Восстановить</a>
+            <a rel="nofollow" data-dismiss="modal" class="btn" href="#">Закрыть</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var columnExtension = {
+            applySorting : function () {
+                var columns = $("#sortable1").sortable("toArray");
+                var disabled = $("#sortable2").sortable("toArray");
+
+                {{grid.javascriptObject}}.load(null, {"extension-columns" : {columns : columns, disabled : disabled}});
+            },
+
+            clearSorting : function () {
+                if (confirm("Восстановить начальное состояние таблицы?")) {
+                    {{grid.javascriptObject}}.load(null, {"extension-columns" : {clear : true}});
+                }
+            },
+
+            init : function () {
+                $( "ul.droptrue" ).sortable({
+                    connectWith: "ul"
+                });
+
+                $( "ul.dropfalse" ).sortable({
+                    connectWith: "ul"
+                });
+                $( "#sortable1, #sortable2").disableSelection();
+            }
+        }
+
+        {% if grid.ajax %}
+            columnExtension.init();
+        {% else %}
+            window.addEventListener('load', function(){
+                columnExtension.init();
+            });
+        {% endif %}
+    </script>
+
+{% endblock element %}

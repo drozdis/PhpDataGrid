@@ -1,23 +1,23 @@
-#grid-plugin-columns {
+#grid-extension-columns {
 
 }
 
-#grid-plugin-columns .col1 {
+#grid-extension-columns .col1 {
     width: 45%;
     float: left;
     margin-right: 5%
 }
 
-#grid-plugin-columns .col2 {
+#grid-extension-columns .col2 {
     width: 45%;
     float: left;
 }
 
-#grid-plugin-columns h5 {
+#grid-extension-columns h5 {
     margin: 0px;
 }
 
-#grid-plugin-columns #sortable1 {
+#grid-extension-columns #sortable1 {
     width: 100%;
     min-height: 400px;
     background-color: #f0f9f8;
@@ -31,7 +31,7 @@
     border: 1px solid #e5e5e5;
 }
 
-#grid-plugin-columns #sortable2 {
+#grid-extension-columns #sortable2 {
     width: 100%;
     min-height: 400px;
     background-color: #f0f9f8;
@@ -45,7 +45,7 @@
     border: 1px solid #e5e5e5;
 }
 
-#grid-plugin-columns .bs-docs-sidenav {
+#grid-extension-columns .bs-docs-sidenav {
     width: 228px;
     margin: 10px 0 0;
     padding: 0;
@@ -58,7 +58,7 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, .065);
 }
 
-#grid-plugin-columns .bs-docs-sidenav>li>a {
+#grid-extension-columns .bs-docs-sidenav>li>a {
     background-color: #fff;
     display: block;
     width: 190px  \9;
@@ -67,19 +67,19 @@
     border: 1px solid #e5e5e5;
 }
 
-#grid-plugin-columns .bs-docs-sidenav>li:first-child>a {
+#grid-extension-columns .bs-docs-sidenav>li:first-child>a {
     -webkit-border-radius: 6px 6px 0 0;
     -moz-border-radius: 6px 6px 0 0;
     border-radius: 6px 6px 0 0;
 }
 
-#grid-plugin-columns .bs-docs-sidenav>li:last-child>a {
+#grid-extension-columns .bs-docs-sidenav>li:last-child>a {
     -webkit-border-radius: 0 0 6px 6px;
     -moz-border-radius: 0 0 6px 6px;
     border-radius: 0 0 6px 6px;
 }
 
-#grid-plugin-columns .ui-sortable-helper>a {
+#grid-extension-columns .ui-sortable-helper>a {
     position: relative;
     z-index: 2;
     padding: 9px 15px;

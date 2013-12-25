@@ -3,6 +3,8 @@ namespace Widget;
 
 /**
  * Class AbstractRenderer
+ *
+ * @author Drozd Igor <drozd.igor@gmail.com>
  */
 abstract class AbstractRenderer extends ObserverAbstract implements RenderInterface
 {
@@ -10,6 +12,11 @@ abstract class AbstractRenderer extends ObserverAbstract implements RenderInterf
      * @var RendererEngine
      */
     private $rendererEngine = null;
+
+    /**
+     * @return string
+     */
+    abstract public function getTemplate();
 
     /**
      * @return \Widget\RendererEngine
@@ -21,14 +28,6 @@ abstract class AbstractRenderer extends ObserverAbstract implements RenderInterf
         }
 
         return $this->rendererEngine;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-
     }
 
     /**
@@ -53,7 +52,7 @@ abstract class AbstractRenderer extends ObserverAbstract implements RenderInterf
             $content = $this->initialHtml();
 
             //event
-            $this->fireEvent('after_render', array('widget' => $this));
+            $this->fireEvent('after_render', array('widget' => $this, 'content' => &$content));
         } catch (\Exception $e) {
             $content = $e . '';
         }

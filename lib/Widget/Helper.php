@@ -3,6 +3,8 @@ namespace Widget;
 
 /**
  * Class Helper
+ *
+ * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class Helper
 {

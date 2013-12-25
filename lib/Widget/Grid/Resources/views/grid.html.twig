@@ -56,8 +56,8 @@
     <tr class="headings">
         {#columns#}
         {% for column in element.columns %}
-            <th data-name="{{column.name}}">
-                {% if (column.hidden == false) %}
+            {% if (column.hidden == false) %}
+                <th data-name="{{column.name}}">
                     {% if (column.sortable) %}
                         {% set class = 'no-sort' %}
                         {% set dir = element.storage.isOrder(column.field) %}
@@ -76,8 +76,8 @@
                     {% else %}
                         <span data-toggle="tooltip" title="{{column.hint}}">{{column.title}}</span>
                     {% endif %}
-                {% endif %}
-            </th>
+                </th>
+            {% endif %}
         {% endfor %}
 
         {#actions#}
@@ -96,10 +96,12 @@
     {% if (filters == true) %}
         <tr class="filter">
             {% for column in element.columns %}
-                {% if (column.hidden == false and column.filter and column.filterable == true) %}
-                    <td><div class="filter-container">{{column.filter.render()|raw}}</div></td>
-                {% else %}
-                    <td></td>
+                {% if (column.hidden == false) %}
+                    {% if (column.filter and column.filterable == true) %}
+                        <td><div class="filter-container">{{column.filter.render()|raw}}</div></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 
@@ -116,7 +118,9 @@
         <tr data-identifier="{{element.storage.getId(row)}}">
             {#columns#}
             {% for column in element.columns %}
-                {{column.setData(row).render()|raw}}
+                {% if (column.hidden == false) %}
+                    {{column.setData(row).render()|raw}}
+                {% endif %}
             {% endfor %}
 
             {#actions#}

@@ -6,6 +6,13 @@ use Widget\Grid\Grid;
 use Widget\RenderInterface;
 
 /**
+ * Toolbar for grid
+ *
+ * It contains items:
+ *  - elements implements RendererInterface
+ *  - buttons  extends Widget\Grid\Toolbar\Button
+ *  - actions  extends Widget\Grid\Toolbar\Action
+ *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class Toolbar extends AbstractRenderer
@@ -83,12 +90,17 @@ class Toolbar extends AbstractRenderer
 
     /**
      * @param RenderInterface $element
+     * @param int             $position
      *
-     * @return Toolbar
+     * @return $this
      */
-    public function addElement(RenderInterface $element)
+    public function addElement(RenderInterface $element, $position = null)
     {
-        $this->elements[] = $element;
+        if ($position === null) {
+            $this->elements[] = $element;
+        } else {
+            array_splice($this->elements, $position, null, array($element));
+        }
 
         return $this;
     }
@@ -159,18 +171,19 @@ class Toolbar extends AbstractRenderer
     }
 
     /**
-     * @example
-     * $applyAction = new Button(array(
-     *       'hint' => 'Выполнить выбранное действие',
-     *       'callback' => $this->getGrid()->getJavascriptObject().'.apply(\''.$this->getGrid()->getName().'\'); return false;',
-     *       'icon' => 'check',
-     *       'title' => 'Применить'
-     * ));
-     * $this->addButton($applyAction, 0);
+     * <code>
+     *   $button = new Button();
+     *   $button->setTitle('Filter');
+     *   $button->setHint('Apply filter');
+     *   $button->setCallback($this->getGrid()->getJavascriptObject() . '.doFilter(); return false;');
+     *   $button->setIcon('filter');
+     *   $this->addButton($button);
+     * </code>
      *
      * @param RenderInterface $button
+     * @param int             $position
      *
-     * @return Toolbar
+     * @return #this
      */
     public function addButton(RenderInterface $button, $position = null)
     {

@@ -24,8 +24,7 @@ class GridBuilder
     private $grid;
 
     /**
-     * @param Grid  $grid
-     * @param array $options
+     * @param Grid $grid
      */
     public function __construct(Grid $grid)
     {
@@ -105,9 +104,9 @@ class GridBuilder
      * @param Toolbar|string $type
      * @param array          $options
      *
-     * @return ToolbarBuilder
+     * @return $this
      */
-    public function setTopToolbar($type = 'toolbar', $options = array())
+    public function setTopToolbar($type = '', $options = array())
     {
         if (!$type instanceof Toolbar) {
             $type = ToolbarFactory::create($type);
@@ -117,15 +116,17 @@ class GridBuilder
         \Widget\Helper::setConstructorOptions($type, $options);
 
         $this->getGrid()->setTopToolbar($type);
+
+        return $this;
     }
 
     /**
      * @param Toolbar|string $type
      * @param array          $options
      *
-     * @return ToolbarBuilder
+     * @return $this
      */
-    public function setBottomToolbar($type = 'toolbar', $options = array())
+    public function setBottomToolbar($type = '', $options = array())
     {
         if (!$type instanceof Toolbar) {
             $type = ToolbarFactory::create($type);
@@ -135,13 +136,15 @@ class GridBuilder
         \Widget\Helper::setConstructorOptions($type, $options);
 
         $this->getGrid()->setBottomToolbar($type);
+
+        return $this;
     }
 
     /**
      * @param string $name
      * @param array  $options
      *
-     * @return GridBuilder
+     * @return $this
      */
     public function addAction($name, $options = array())
     {
@@ -163,7 +166,7 @@ class GridBuilder
      * @param AbstractExtension|string $type
      * @param array                    $options
      *
-     * @return GridBuilder
+     * @return $this
      */
     public function addExtension($type, $options = array())
     {

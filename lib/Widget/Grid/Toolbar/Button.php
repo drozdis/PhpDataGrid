@@ -1,13 +1,13 @@
 <?php
 namespace Widget\Grid\Toolbar;
-use Widget\RenderInterface;
+use Widget\AbstractRenderer;
 
 /**
  * Toolbar button
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
-class Button implements RenderInterface
+class Button extends AbstractRenderer
 {
     /**
      * @var string
