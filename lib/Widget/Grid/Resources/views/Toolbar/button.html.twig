@@ -1,0 +1,8 @@
+{% block element %}
+    <button data-toggle="tooltip" data-original-title="{{element.hint}}" class="btn btn-sm {{element.class}}" onclick="{{element.callback}}">
+        {% if (element.icon) %}
+            <i class="icon-{{element.icon}} icon-white"></i>
+        {% endif %}
+        {{element.title}}
+    </button>
+{% endblock  element%}

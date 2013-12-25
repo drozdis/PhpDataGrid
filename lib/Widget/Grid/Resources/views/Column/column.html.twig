@@ -1,0 +1,8 @@
+{% block element %}
+   {% set align = element.align %}
+   <td {% if (align) %}align="{{align}}" {% endif %}>{{ block('content') }}</td>
+{% endblock element %}
+
+{% block content %}
+    {{element.value}}
+{% endblock content %}

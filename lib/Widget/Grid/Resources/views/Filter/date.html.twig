@@ -1,0 +1,29 @@
+{% block element %}
+    <div class="field-100">
+        {% set value = element.value %}
+        {% set name = element.column.name %}
+
+        <input type="text" class="form-control date" value="{{value}}" placeholder="from" id="{{name}}" name="{{name}}" />
+    </div>
+
+    <script type="text/javascript">
+        function initDateCalendar(name) {
+            $( "#"+name ).datepicker({
+                changeMonth: true,
+                dateFormat: "dd.mm.yy",
+                onSelect : function() {
+                    {{element.grid.javascriptObject}}.doFilter();
+                }
+            });
+        }
+
+        {% if (element.column.grid.ajax) %}
+            initDateCalendar('{{name}}');
+        {% else %}
+            window.addEventListener('load', function(){
+                initDateCalendar('{{name}}');
+            });
+        {% endif %}
+    </script>
+
+{% endblock element %}

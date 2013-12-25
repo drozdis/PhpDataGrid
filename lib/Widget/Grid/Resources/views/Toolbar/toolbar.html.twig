@@ -1,0 +1,46 @@
+{% block element %}
+    {% set grid = element.grid %}
+    {% set count = grid.storage.count %}
+
+    <div class="grid-toolbar clearfix">
+        {#info#}
+        <div class="pull-left">
+            <button data-toggle="tooltip" title="Update" id="refresh" onclick="{{grid.javascriptObject}}.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="icon-refresh icon-white"></i></button>
+            <div id="number-in-page" class="pull-left">
+                Rows: <strong>{{count}}</strong>
+            </div>
+        </div>
+
+        {#elements#}
+        <div class="pull-left">
+            {% for item in element.elements %}
+                {{item.render|raw}}
+            {% endfor %}
+        </div>
+
+        <div class="pull-right">
+            {#actions#}
+            {% if element.actions %}
+                <div class="pull-left">
+                    Actions:&nbsp;
+                    {#$html .= '<select class="additionally" style="margin-right: 10px; max-width:150px;" name="' . $this->getGrid()->getName() . '_action">';#}
+                        {#$html .= '<option></option>';#}
+                        {#foreach ($actions as $key => &$action) {#}
+                        {#$html .= '<option value="' . $key . '" data-json="' . $action->toJson() . '">' . $action->getTitle() . '</option>';#}
+                        {#}#}
+                        {#$html .= '</select>';#}
+                    {#$html .= '</div>';#}
+                </div>
+            {% endif %}
+
+            {#buttons#}
+            {% if element.buttons %}
+            <div class="btn-group pull-right">
+                {% for button in element.buttons %}
+                    {{button.render|raw}}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock  element%}

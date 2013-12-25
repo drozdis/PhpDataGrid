@@ -1,0 +1,134 @@
+{% block element %}
+    <div class="grid_ct">
+        <div id="{{ element.name }}">
+            {{ element.topToolbar|raw }}
+            {{ block('table') }}
+            {{ element.bottomToolbar|raw }}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        {% if element.ajax == false %}
+            var {{ element.javascriptObject}};
+            window.addEventListener('load', function(){
+                var json = {
+                    'id'           : '{{element.name}}',
+                    'url'          : '{{element.url({'page':true})}}',
+                    'baseUrl'      : '{{element.baseUrl}}',
+                    'replaceUrl'   : {% if element.replaceUrl %} true {% else %} false {% endif %},
+                    'autoLoad'     : {% if element.autoLoad %} true {% else %} false {% endif %},
+                    'uriDelimeter' : '{{element.uriDelimeter}}'
+                };
+
+                if (typeof({{ element.javascriptObject}}) == "undefined") {
+                    {{ element.javascriptObject}} = new Widget.Grid(json);
+                }
+            });
+        {% endif %}
+    </script>
+{% endblock element %}
+
+{% block table %}
+    <table class="table table-striped table-bordered table-condensed">
+        {{ block('header') }}
+        {{ block('filters') }}
+        {{ block('body') }}
+    </table>
+{% endblock table %}
+
+{% block header %}
+    {#header config#}
+    <colgroup>
+        {#columns#}
+        {% for column in element.columns %}
+            {% if (column.hidden == false) %}
+                <col width="{{column.width}}"/>
+            {% endif %}
+        {% endfor %}
+
+        {#actions#}
+        {% if (element.actions) %}
+            <col/>
+        {% endif %}
+    </colgroup>
+
+    {#header#}
+    <tr class="headings">
+        {#columns#}
+        {% for column in element.columns %}
+            <th data-name="{{column.name}}">
+            {% if (column.hidden == false) %}
+                {% if (column.sortable) %}
+                    {% set class = 'no-sort' %}
+                    {% set dir = element.storage.isOrder(column.field) %}
+                    {% if (dir != false) %}
+                        {% set class = 'sort-' ~ dir %}
+                    {% endif %}
+
+                    <div class="sort-block {{class}}">
+                        <div class="s-sort-wrap">
+                            <a rel="nofollow" data-toggle="tooltip" title="{{column.hint}}" class="s-sort" href="{{ element.url({order:{(column.name):'add'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;">{{column.title}}<span></span></a>
+                        </div>
+                        {% if (class != 'not-sort') %}
+                            <a rel="nofollow" href="{{ element.url({order:{(column.name):'remove'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;"></a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <span data-toggle="tooltip" title="{{column.hint}}">{{column.title}}</span>
+                {% endif %}
+            {% endif %}
+            </th>
+        {% endfor %}
+
+        {#actions#}
+        {% if (element.actions) %}
+            <th></th>
+        {% endif %}
+    </tr>
+{% endblock header %}
+
+{% block filters %}
+    {% set filters = false %}
+    {% for column in element.columns if (column.hidden == false and column.filter and column.filterable == true) %}
+        {% set filters = true %}
+    {% endfor %}
+
+    {% if (filters == true) %}
+        <tr class="filter">
+            {% for column in element.columns %}
+                {% if (column.hidden == false and column.filter and column.filterable == true) %}
+                    <td><div class="filter-container">{{column.filter.render|raw}}</div></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            {% endfor %}
+
+            {#actions#}
+            {% if (element.actions) %}
+                <td></td>
+            {% endif %}
+        </tr>
+    {% endif %}
+{% endblock filters %}
+
+{% block body %}
+    {% for row in element.storage.data %}
+        <tr data-identifier="{{element.storage.getId(row)}}">
+            {#columns#}
+            {% for column in element.columns %}
+                {{column.setData(row).render()|raw}}
+            {% endfor %}
+
+            {#actions#}
+            {% if (element.actions) %}
+                <td>
+                    <div class="btn-group">
+                    {% for action in element.actions %}
+                        {{action.setData(row).render()|raw}}
+                    {% endfor %}
+                    </div>
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endblock body %}

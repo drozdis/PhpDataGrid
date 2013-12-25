@@ -1,0 +1,5 @@
+{% block element %}
+<div class="field-100">
+    <input class="form-control no-changes" type="text" name="{{element.column.name}}" value="{{element.value}}" onkeypress="{{element.grid.javascriptObject}}.doFilterEnter(event);" />
+</div>
+{% endblock element %}

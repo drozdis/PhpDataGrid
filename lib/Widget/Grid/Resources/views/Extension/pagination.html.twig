@@ -1,0 +1,45 @@
+{% block element %}
+    {% macro renderHref(grid, href, class, number) %}
+        <li class="{{ class }}"><a onclick="{{ grid.jvascriptObject }}.load(this.href); return false;" href="{{ href ? href : 'javascript:void(0)' }}">{{ number }}</a></li>
+    {% endmacro %}
+
+    {% set grid = element.grid %}
+
+    {% if pageCount > 1 %}
+        <div class="pagination-centered">
+            <ul class="pagination pagination-sm">
+                {% if (previous) %}
+                    {{ _self.renderHref(grid, previous['url'], '', '«') }}
+                {% else %}
+                    {{ _self.renderHref(grid, null, 'disabled', '«') }}
+                {% endif %}
+
+                {% if (first['number'] != firstPageInRange['number']) %}
+                    {{ _self.renderHref(grid, first['url'], current == first['number'] ? 'active' : '', first['number']) }}
+                {% endif %}
+
+                {% if (first['number'] != firstPageInRange['number'] and first['number'] != firstPageInRange['number'] - 1) %}
+                    {{ _self.renderHref(grid, '', 'disabled', '...') }}
+                {% endif %}
+
+                {% for page in pagesInRange %}
+                    {{ _self.renderHref(grid, page['url'], current == page['number'] ? 'active' : '', page['number']) }}
+                {% endfor %}
+
+                {% if (last['number'] != lastPageInRange['number'] and last['number'] != lastPageInRange['number'] + 1) %}
+                    {{ _self.renderHref(grid, '', 'disabled', '...') }}
+                {% endif %}
+
+                {% if (last['number'] != lastPageInRange['number']) %}
+                    {{ _self.renderHref(grid, last['url'], current == last['number'] ? 'active' : '', last['number']) }}
+                {% endif %}
+
+                {% if (next) %}
+                    {{ _self.renderHref(grid, next['url'], '', '»') }}
+                {% else %}
+                    {{ _self.renderHref(grid, null, 'disabled', '»') }}
+                {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock element %}

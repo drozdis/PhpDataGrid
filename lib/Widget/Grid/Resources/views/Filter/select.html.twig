@@ -1,0 +1,21 @@
+{% block element %}
+<div class="field-100">
+    {% if (element.multiselect) %}
+        <div class="multiselect nowrap" style="height:60px;">
+            {% for option in element.options %}
+                <label class="checkbox"><input name="{{element.column.name}}[]" onclick="{{element.grid.javascriptObject}}.doFilter();" type="checkbox" id="{{element.column.name}}{{loop.index}}" value="{{loop.index}}" /> {{option}}</label>';
+            {% endfor %}
+        </div>
+    {% else %}
+        <select class="form-control" name="{{element.column.name}}" onchange="{{element.grid.javascriptObject}}.doFilter();">
+            {% if (element.empty) %}
+                <option value=""></option>
+            {% endif %}
+
+            {% for option in element.options %}
+                <option value="{{loop.index}}" {% if element.value == loop.index %} selected="selected" {% endif %}>{{option}}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+</div>
+{% endblock element %}
