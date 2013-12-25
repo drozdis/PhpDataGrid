@@ -9,21 +9,21 @@
 
     <script type="text/javascript">
         {% if element.ajax == false %}
-            var {{ element.javascriptObject}};
-            window.addEventListener('load', function(){
-                var json = {
-                    'id'           : '{{element.name}}',
-                    'url'          : '{{element.url({'page':true})}}',
-                    'baseUrl'      : '{{element.baseUrl}}',
-                    'replaceUrl'   : {% if element.replaceUrl %} true {% else %} false {% endif %},
-                    'autoLoad'     : {% if element.autoLoad %} true {% else %} false {% endif %},
-                    'uriDelimeter' : '{{element.uriDelimeter}}'
-                };
+        var {{ element.javascriptObject}};
+        window.addEventListener('load', function(){
+            var json = {
+                'id'           : '{{element.name}}',
+                'url'          : '{{element.url({'page':true})|raw}}',
+                'baseUrl'      : '{{element.baseUrl|raw}}',
+                'replaceUrl'   : {{ element.replaceUrl ? true : false }},
+                'autoLoad'     : {{ element.autoLoad ? true : false }},
+                'uriDelimeter' : '{{element.uriDelimeter}}'
+            };
 
-                if (typeof({{ element.javascriptObject}}) == "undefined") {
-                    {{ element.javascriptObject}} = new Widget.Grid(json);
-                }
-            });
+            if (typeof({{ element.javascriptObject}}) == "undefined") {
+                {{ element.javascriptObject}} = new Widget.Grid(json);
+            }
+        });
         {% endif %}
     </script>
 {% endblock element %}
@@ -57,26 +57,26 @@
         {#columns#}
         {% for column in element.columns %}
             <th data-name="{{column.name}}">
-            {% if (column.hidden == false) %}
-                {% if (column.sortable) %}
-                    {% set class = 'no-sort' %}
-                    {% set dir = element.storage.isOrder(column.field) %}
-                    {% if (dir != false) %}
-                        {% set class = 'sort-' ~ dir %}
-                    {% endif %}
-
-                    <div class="sort-block {{class}}">
-                        <div class="s-sort-wrap">
-                            <a rel="nofollow" data-toggle="tooltip" title="{{column.hint}}" class="s-sort" href="{{ element.url({order:{(column.name):'add'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;">{{column.title}}<span></span></a>
-                        </div>
-                        {% if (class != 'not-sort') %}
-                            <a rel="nofollow" href="{{ element.url({order:{(column.name):'remove'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;"></a>
+                {% if (column.hidden == false) %}
+                    {% if (column.sortable) %}
+                        {% set class = 'no-sort' %}
+                        {% set dir = element.storage.isOrder(column.field) %}
+                        {% if (dir != false) %}
+                            {% set class = 'sort-' ~ dir %}
                         {% endif %}
-                    </div>
-                {% else %}
-                    <span data-toggle="tooltip" title="{{column.hint}}">{{column.title}}</span>
+
+                        <div class="sort-block {{class}}">
+                            <div class="s-sort-wrap">
+                                <a rel="nofollow" data-toggle="tooltip" title="{{column.hint}}" class="s-sort" href="{{ element.url({order:{(column.name):'add'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;">{{column.title}}<span></span></a>
+                            </div>
+                            {% if (class != 'not-sort') %}
+                                <a rel="nofollow" href="{{ element.url({order:{(column.name):'remove'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;"></a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <span data-toggle="tooltip" title="{{column.hint}}">{{column.title}}</span>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
             </th>
         {% endfor %}
 
@@ -123,9 +123,9 @@
             {% if (element.actions) %}
                 <td>
                     <div class="btn-group">
-                    {% for action in element.actions %}
-                        {{action.setData(row).render()|raw}}
-                    {% endfor %}
+                        {% for action in element.actions %}
+                            {{action.setData(row).render()|raw}}
+                        {% endfor %}
                     </div>
                 </td>
             {% endif %}
