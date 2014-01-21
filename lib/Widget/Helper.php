@@ -15,7 +15,7 @@ class Helper
     public static function setConstructorOptions($object, $options)
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . self::normalizeKey($key);
+            $method = 'set' . self::normalizeMethod($key);
             if (method_exists($object, $method)) {
                 $object->$method($value);
             }
@@ -27,10 +27,24 @@ class Helper
      *
      * @return string
      */
-    public static function normalizeKey($key)
+    public static function normalizeMethod($key)
     {
         $option = str_replace('_', ' ', strtolower($key));
         $option = str_replace(' ', '', ucwords($option));
+
+        return $option;
+    }
+
+    /**
+     * @param string $key name param
+     *
+     * @return string
+     */
+    public static function normalizeKey($key)
+    {
+        $option    = str_replace('_', ' ', strtolower($key));
+        $option    = str_replace(' ', '', ucwords($option));
+        $option[0] = strtolower($option[0]);
 
         return $option;
     }
@@ -114,6 +128,7 @@ class Helper
 
     /**
      * Получение параметра с Хеша
+     *
      * @param string      $hash
      * @param string|Null $name
      *
@@ -135,6 +150,7 @@ class Helper
 
     /**
      * Формирование хеша
+     *
      * @param array $params
      *
      * @return string
@@ -155,7 +171,7 @@ class Helper
         if (is_array($row)) {
             return isset($row[$key]) ? $row[$key] : null;
         } elseif (is_object($row)) {
-            $method = 'get' . self::normalizeKey($key);
+            $method = 'get' . self::normalizeMethod($key);
             if (method_exists($row, $method)) {
                 return call_user_func(array($row, $method));
             } else {

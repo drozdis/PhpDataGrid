@@ -182,7 +182,7 @@ class Grid extends AbstractWidget
         if (!empty($state['columns'])) {
             foreach ($state['columns'] as $name => $column) {
                 foreach ($column as $key => $value) {
-                    $method = 'set' . Helper::normalizeKey($key);
+                    $method = 'set' . Helper::normalizeMethod($key);
                     method_exists($this->getColumn($name), $method) && call_user_func(array($this->getColumn($name), $method), $value);
                 }
             }
@@ -841,7 +841,7 @@ class Grid extends AbstractWidget
     {
         $this->params = $params;
         foreach ((array) $this->params as $key => $vlaue) {
-            $method = 'set' . Helper::normalizeKey($key);
+            $method = 'set' . Helper::normalizeMethod($key);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $vlaue);
             }
@@ -888,12 +888,12 @@ class Grid extends AbstractWidget
             $state['columns'] = $state['filters'] = array();
             foreach ($this->getColumns() as $name => $column) {
                 foreach ($keys as $key) {
-                    $method = 'get' . Helper::normalizeKey($key);
+                    $method = 'get' . Helper::normalizeMethod($key);
                     if (method_exists($column, $method)) {
                         $state['columns'][$name][$key] = call_user_func(array($column, $method));
                     }
 
-                    $method = 'is' . Helper::normalizeKey($key);
+                    $method = 'is' . Helper::normalizeMethod($key);
                     if (method_exists($column, $method)) {
                         $state['columns'][$name][$key] = call_user_func(array($column, $method));
                     }

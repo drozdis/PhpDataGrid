@@ -77,8 +77,8 @@ class DoctrineStorage extends AbstractStorage
         //filter and ordering
         $this->filter()->order();
 
-        $countQuery = clone $query;
-        $countQuery = $countQuery->select('count(e)')->getQuery();
+        $countQuery  = clone $query;
+        $countQuery  = $countQuery->select('count(e)')->getQuery();
         $this->count = $countQuery->getSingleScalarResult();
 
         //fire load event
@@ -110,7 +110,7 @@ class DoctrineStorage extends AbstractStorage
     public function order()
     {
         foreach ($this->orders as $name => $dir) {
-            $method = 'orderBy' . Helper::normalizeKey($name);
+            $method = 'orderBy' . Helper::normalizeMethod($name);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $dir);
             } else {
@@ -127,7 +127,7 @@ class DoctrineStorage extends AbstractStorage
     public function filter()
     {
         foreach ($this->filters as $filter) {
-            $method = 'filter' . Helper::normalizeKey($filter['name']);
+            $method = 'filter' . Helper::normalizeMethod($filter['name']);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $filter['value']);
             } else {
@@ -169,10 +169,9 @@ class DoctrineStorage extends AbstractStorage
         static $i = 1;
 
         if (strpos($field, '.') === false) {
-            $field = Helper::normalizeKey($field);
-            $field = 'e.' . $field;
+            $field = 'e.' . Helper::normalizeKey($field);
         }
-        $var = 'f' . ($i++);
+        $var       = 'f' . ($i++);
         $operation = str_replace('?', ':' . $var, $operation);
 
         $queryBuilder->andWhere($field . ' ' . $operation);

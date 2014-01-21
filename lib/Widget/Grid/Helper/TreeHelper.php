@@ -89,7 +89,7 @@ class TreeHelper
      */
     public function getValue($row, $key)
     {
-        return call_user_func(array($row, 'get' . Helper::normalizeKey($key)));
+        return call_user_func(array($row, 'get' . Helper::normalizeMethod($key)));
     }
 
     /**
