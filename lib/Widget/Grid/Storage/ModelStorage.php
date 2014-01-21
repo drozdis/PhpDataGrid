@@ -105,6 +105,7 @@ class ModelStorage extends AbstractStorage
         foreach ($this->orders as $name => $dir) {
             $arr = explode('.', $name);
             $clearName = array_pop($arr);
+
             $method = '_order' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($clearName));
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $dir);

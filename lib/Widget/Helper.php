@@ -27,7 +27,7 @@ class Helper
      *
      * @return string
      */
-    protected static function normalizeKey($key)
+    public static function normalizeKey($key)
     {
         $option = str_replace('_', ' ', strtolower($key));
         $option = str_replace(' ', '', ucwords($option));
@@ -155,7 +155,7 @@ class Helper
         if (is_array($row)) {
             return isset($row[$key]) ? $row[$key] : null;
         } elseif (is_object($row)) {
-            $method = 'get' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
+            $method = 'get' . self::normalizeKey($key);
             if (method_exists($row, $method)) {
                 return call_user_func(array($row, $method));
             } else {

@@ -27,6 +27,7 @@ class Grid extends AbstractWidget
 
     /**
      * Хеш для быстроко поиска колонок по полю
+     *
      * @var \Widget\Grid\Column\Column[]
      */
     protected $columnsByField = array();
@@ -73,6 +74,7 @@ class Grid extends AbstractWidget
 
     /**
      * Параметры урл
+     *
      * @var array
      */
     protected $urlParams = array();
@@ -94,6 +96,7 @@ class Grid extends AbstractWidget
 
     /**
      * Сохранять/не сохранять состояние
+     *
      * @var Boolean
      */
     protected $saveState = true;
@@ -102,12 +105,14 @@ class Grid extends AbstractWidget
 
     /**
      * Заменять урл а адресной строке на урл таблици
+     *
      * @var Boolean
      */
     protected $replaceUrl = true;
 
     /**
      * Подгружать данные автоматически после рендеринга таблицы
+     *
      * @var Boolean
      */
     protected $autoLoad = false;
@@ -158,7 +163,7 @@ class Grid extends AbstractWidget
     public function applyState()
     {
         $params = $this->getUrlParams();
-        $state = $this->getState()->getState();
+        $state  = $this->getState()->getState();
         if ($this->isSaveState()) {
             if (empty($params['order']) && empty($params['filter'])) {
                 if (!empty($state['filters']) && $this->getStorage()) {
@@ -177,7 +182,7 @@ class Grid extends AbstractWidget
         if (!empty($state['columns'])) {
             foreach ($state['columns'] as $name => $column) {
                 foreach ($column as $key => $value) {
-                    $method = 'set' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
+                    $method = 'set' . Helper::normalizeKey($key);
                     method_exists($this->getColumn($name), $method) && call_user_func(array($this->getColumn($name), $method), $value);
                 }
             }
@@ -235,9 +240,9 @@ class Grid extends AbstractWidget
     public function applyFilter($filter)
     {
         $filter = Helper::arrayMap('urldecode', $filter);
-        $data = Helper::filterNotEmpty($filter);
+        $data   = Helper::filterNotEmpty($filter);
 
-        $grid = $this;
+        $grid     = $this;
         $listener = new ObserverListener(function () use ($data, $grid) {
             foreach ($data as $name => $value) {
                 if (($column = $this->getColumn($name)) && ($filter = $column->getFilter()) && $column->isHidden() == false) {
@@ -295,7 +300,7 @@ class Grid extends AbstractWidget
      */
     public function applyOrder($order)
     {
-        $grid = $this;
+        $grid     = $this;
         $listener = new ObserverListener(function ($storage) use ($order, $grid) {
             /* @var $storage AbstractStorage */
 
@@ -393,7 +398,7 @@ class Grid extends AbstractWidget
     {
         $column = $this->createColumns($name, $column);
 
-        $this->columns[$name] = $column;
+        $this->columns[$name]                      = $column;
         $this->columnsByField[$column->getField()] = $column;
 
         return $this;
@@ -466,7 +471,7 @@ class Grid extends AbstractWidget
         if ($position == count($this->columns)) {
             $this->addColumn($name, $column);
         } else {
-            $index = 1;
+            $index   = 1;
             $columns = array();
             foreach ($this->columns as $existName => $exist) {
                 if ($index == $position) {
@@ -652,7 +657,7 @@ class Grid extends AbstractWidget
         $url = array();
 
         $storeOrders = $this->getStorage()->getOrders();
-        $orders = array();
+        $orders      = array();
         foreach ($storeOrders as $name => $dir) {
             $column = $this->getColumnByField($name);
             if (!empty($column) && $column->isHidden() == false && $column->isSortable()) {
@@ -663,7 +668,7 @@ class Grid extends AbstractWidget
         if (!empty($mixer['order'])) {
             $column = $this->getColumnByField(key($mixer['order']));
             $action = current($mixer['order']);
-            $name = $column->getName();
+            $name   = $column->getName();
 
             if ($column) {
                 if ($action == 'remove') {
@@ -718,7 +723,7 @@ class Grid extends AbstractWidget
             $separator = '&';
         }
         if (!empty($url)) {
-            $url = rtrim($this->getBaseUrl(), '/') . ($separator == '?' ? '/'.$separator : $separator) . join($this->uriDelimeter, $url);
+            $url = rtrim($this->getBaseUrl(), '/') . ($separator == '?' ? '/' . $separator : $separator) . join($this->uriDelimeter, $url);
         } else {
             $url = rtrim($this->getBaseUrl(), '/');
         }
@@ -836,7 +841,7 @@ class Grid extends AbstractWidget
     {
         $this->params = $params;
         foreach ((array) $this->params as $key => $vlaue) {
-            $method = 'set' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
+            $method = 'set' . Helper::normalizeKey($key);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $vlaue);
             }
@@ -878,17 +883,17 @@ class Grid extends AbstractWidget
     public function saveState()
     {
         if ($this->isSaveState()) {
-            $state = array();
-            $keys = array('hidden', 'position');
+            $state            = array();
+            $keys             = array('hidden', 'position');
             $state['columns'] = $state['filters'] = array();
             foreach ($this->getColumns() as $name => $column) {
                 foreach ($keys as $key) {
-                    $method = 'get' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
+                    $method = 'get' . Helper::normalizeKey($key);
                     if (method_exists($column, $method)) {
                         $state['columns'][$name][$key] = call_user_func(array($column, $method));
                     }
 
-                    $method = 'is' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
+                    $method = 'is' . Helper::normalizeKey($key);
                     if (method_exists($column, $method)) {
                         $state['columns'][$name][$key] = call_user_func(array($column, $method));
                     }
@@ -904,7 +909,7 @@ class Grid extends AbstractWidget
             }
 
             if ($storage = $this->getStorage()) {
-                $orders = array();
+                $orders      = array();
                 $storeOrders = $storage->getOrders();
                 foreach ($this->getColumns() as $column) {
                     if ($column->isHidden() == false && $column->isSortable() && isset($storeOrders[$column->getField()])) {
@@ -913,7 +918,7 @@ class Grid extends AbstractWidget
                 }
                 $state['orders'] = $orders;
 
-                $state['page'] = $storage->getPage();
+                $state['page']   = $storage->getPage();
                 $state['onpage'] = $storage->getOnPage();
             }
             $this->getState()->setState($state);

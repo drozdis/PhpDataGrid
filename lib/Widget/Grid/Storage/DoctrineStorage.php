@@ -1,6 +1,8 @@
 <?php
 namespace Widget\Grid\Storage;
 
+use Widget\Helper;
+
 /**
  * The storage that provide a loading data dynamically from doctrine repository
  *
@@ -108,11 +110,11 @@ class DoctrineStorage extends AbstractStorage
     public function order()
     {
         foreach ($this->orders as $name => $dir) {
-            $method = 'orderBy' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($name));
+            $method = 'orderBy' . Helper::normalizeKey($name);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $dir);
             } else {
-                $this->getQueryBuilder()->orderBy('e.' . $this->normalize($name), $dir);
+                $this->getQueryBuilder()->orderBy('e.' . Helper::normalizeKey($name), $dir);
             }
         }
 
@@ -125,7 +127,7 @@ class DoctrineStorage extends AbstractStorage
     public function filter()
     {
         foreach ($this->filters as $filter) {
-            $method = 'filter' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($filter['name']));
+            $method = 'filter' . Helper::normalizeKey($filter['name']);
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $filter['value']);
             } else {
@@ -155,18 +157,6 @@ class DoctrineStorage extends AbstractStorage
     }
 
     /**
-     * Normalize field name to doctrine name - entity_id => entityId
-     *
-     * @param string $field
-     *
-     * @return string
-     */
-    protected function normalize($field)
-    {
-        return preg_replace("#_([a-z])#e", "ucfirst('\\1')", $field);
-    }
-
-    /**
      * @param \Doctrine\ORM\QueryBuilder $queryBuilder
      * @param string                     $field
      * @param string                     $operation
@@ -179,7 +169,7 @@ class DoctrineStorage extends AbstractStorage
         static $i = 1;
 
         if (strpos($field, '.') === false) {
-            $field = $this->normalize($field);
+            $field = Helper::normalizeKey($field);
             $field = 'e.' . $field;
         }
         $var = 'f' . ($i++);

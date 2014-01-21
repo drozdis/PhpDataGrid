@@ -1,6 +1,8 @@
 <?php
 namespace Widget\Grid\Helper;
 
+use Widget\Helper;
+
 /**
  * Хелпер для построение деревьев и работы с ними
  */
@@ -14,12 +16,14 @@ class TreeHelper
 
     /**
      * Идентификатор данных
+     *
      * @var Integer
      */
     protected $idField = 'id';
 
     /**
      * Идентификатор "ссылка на родилеть"
+     *
      * @var Integer
      */
     protected $parentField = 'pid';
@@ -85,9 +89,7 @@ class TreeHelper
      */
     public function getValue($row, $key)
     {
-        $mehtod = 'get' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($key));
-
-        return call_user_func(array($row, $mehtod));
+        return call_user_func(array($row, 'get' . Helper::normalizeKey($key)));
     }
 
     /**
