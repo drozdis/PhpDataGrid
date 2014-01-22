@@ -15,7 +15,7 @@ class Pagination extends AbstractExtension
     /**
      * @var int
      */
-    private $onPage = 0;
+    private $onPage = 20;
 
     /**
      * @param int $onPage
