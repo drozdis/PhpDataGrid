@@ -1,0 +1,21 @@
+{% block element %}
+    {% set grid = element.grid %}
+    {% set extension = element.extension %}
+
+    <script type="text/javascript">
+        var fixHeaderExtension = {
+            init : function () {
+                $('.grid_ct table').fixHeader({fixedOffset : {{extension.fixedOffset}}});
+            }
+        }
+
+        {% if grid.ajax %}
+            fixHeaderExtension.init();
+        {% else %}
+            window.addEventListener('load', function(){
+                fixHeaderExtension.init();
+            });
+        {% endif %}
+    </script>
+
+{% endblock element %}
