@@ -67,7 +67,7 @@
 
                         <div class="sort-block {{class}}">
                             <div class="s-sort-wrap">
-                                <a rel="nofollow" data-toggle="tooltip" title="{{column.hint}}" class="s-sort" href="{{ element.url({order:{(column.name):'add'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;">{{column.title}}<span></span></a>
+                                <a rel="nofollow" data-toggle="tooltip" data-html="true" title="{{column.hint}}" class="s-sort" href="{{ element.url({order:{(column.name):'add'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;">{{column.title}}<span></span></a>
                             </div>
                             {% if (class != 'not-sort') %}
                                 <a rel="nofollow" href="{{ element.url({order:{(column.name):'remove'}}) }}" onclick="{{element.javascriptObject}}.load(this.href); return false;"></a>
