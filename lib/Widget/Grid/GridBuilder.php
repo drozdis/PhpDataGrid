@@ -174,8 +174,8 @@ class GridBuilder
             $type = ExtensionFactory::create($type);
         }
 
-        //set options
-        $type->setOptions($options);
+        //apply options
+        \Widget\Helper::setConstructorOptions($type, $options);
 
         //add to grid
         $this->grid->addExtension($type);

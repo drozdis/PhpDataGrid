@@ -6,11 +6,29 @@ use Widget\ObserverListener;
 
 /**
  * Paginator
+ * //@todo ahother option from renderer
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class Pagination extends AbstractExtension
 {
+    /**
+     * @var int
+     */
+    private $onPage = 0;
+
+    /**
+     * @param int $onPage
+     *
+     * @return $this
+     */
+    public function setOnPage($onPage)
+    {
+        $this->onPage = $onPage;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -20,7 +38,8 @@ class Pagination extends AbstractExtension
         $bottomToolbar = $this->getWidget()->getBottomToolbar();
 
         if ($bottomToolbar || $topToolbar) {
-            $paginator = new PaginationModel($this->getWidget()->getStorage(), $this->getOptions());
+            $paginator = new PaginationRenderer($this->getWidget()->getStorage());
+            $paginator->setOnPage($this->onPage);
             $paginator->setParams(array('grid' => $this->getWidget()));
 
             //lisener

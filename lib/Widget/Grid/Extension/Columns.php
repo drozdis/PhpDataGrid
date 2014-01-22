@@ -40,7 +40,7 @@ class Columns extends AbstractExtension
             $toolbar->addButton($button);
 
             $listener = new ObserverListener(function ($grid, &$content) {
-                $window = new ColumnsWindow($grid);
+                $window = new ColumnsRenderer($grid);
                 $content .= $window->render();
             });
             $grid->addEventListener('after_render', $listener);

@@ -15,27 +15,6 @@ abstract class AbstractExtension
     protected $widget = null;
 
     /**
-     * @var array
-     */
-    protected $options = array();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
      * @param AbstractWidget $widget
      *
      * @return AbstractExtension
