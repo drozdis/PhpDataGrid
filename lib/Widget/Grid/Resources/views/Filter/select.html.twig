@@ -12,8 +12,8 @@
                 <option value=""></option>
             {% endif %}
 
-            {% for option in element.options %}
-                <option value="{{loop.index}}" {% if element.value == loop.index %} selected="selected" {% endif %}>{{option}}</option>
+            {% for key,option in element.options %}
+                <option value="{{key}}" {% if element.value == loop.index %} selected="selected" {% endif %}>{{option}}</option>
             {% endfor %}
         </select>
     {% endif %}
