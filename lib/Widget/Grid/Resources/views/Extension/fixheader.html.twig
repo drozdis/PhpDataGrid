@@ -5,7 +5,24 @@
     <script type="text/javascript">
         var fixHeaderExtension = {
             init : function () {
-                $('.grid_ct table').fixHeader({fixedOffset : {{extension.fixedOffset}}});
+                $('.grid_ct table').fixHeader({
+                    fixedOffset : {{extension.fixedOffset}},
+                    onToggleHeaders : function(header) {
+                        var floatingHeader = $(this).find('.tableFloatingHeader');
+                        var originalHeader = $(this).find('.tableFloatingHeaderOriginal');
+
+                        if (header.hasClass('tableFloatingHeader')) {
+                            floatingHeader.find('tr.filter_fake').removeClass('filter_fake').addClass('filter');
+                            originalHeader.find('tr.filter').removeClass('filter').addClass('filter_fake');
+                        } else {
+                            originalHeader.find('tr.filter_fake').removeClass('filter_fake').addClass('filter');
+                            floatingHeader.find('tr.filter').removeClass('filter').addClass('filter_fake');
+                        }
+                    },
+                    onInit : function() {
+                        $(this).find('.tableFloatingHeader').find('tr.filter').removeClass('filter').addClass('filter_fake');
+                    }
+                });
             }
         }
 

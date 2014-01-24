@@ -30,7 +30,7 @@
     color: #222;
 }
 
-.table .filter td {
+.table .filter td, .table .filter_fake td {
     background: #e8eef0 !important;
 }
 
@@ -38,11 +38,11 @@
     background-color: #E8EEF0;
 }
 
-.table .filter .filter-container {
+.table .filter .filter-container, .table .filter_fake .filter-container  {
     padding: 0 10px 0 0;
 }
 
-.table .filter td input {
+.table .filter td input, .table .filter_fake td input {
     width: 100% !important;
     height: 25px;
     line-height: 16px;
@@ -50,28 +50,28 @@
     margin-bottom: 3px;
 }
 
-.table .filter td select {
+.table .filter td select, .table .filter_fake td select {
     width: 100% !important;
     height: 24px;
     font-size: 12px;
     padding: 2px;
 }
 
-.table .filter td input[type="checkbox"] {
+.table .filter td input[type="checkbox"], .table .filter_fake td input[type="checkbox"] {
     width: 20px !important;
 }
 
-.table .filter td .range .range-line {
+.table .filter td .range .range-line, .table .filter_fake td .range .range-line {
     margin-bottom: 3px;
     clear: both;
 }
 
-.table .filter td .range input {
+.table .filter td .range input, .table .filter_fake td .range input {
     margin-top: 0;
     min-width: 85px;
 }
 
-.filter .field-100 input {
+.table .filter .field-100 input, .table .filter_fake .field-100 input {
     padding: 4px 0 !important;
 }
 
