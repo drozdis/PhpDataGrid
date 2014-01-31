@@ -2,7 +2,7 @@
     {% set grid = element.grid %}
     {% set count = grid.storage.count %}
     <div class="toolbar-info">
-        <button data-toggle="tooltip" title="Update" id="refresh" onclick="{{grid.javascriptObject}}.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="icon-refresh icon-white"></i></button>
+        <button data-toggle="tooltip" title="Update" id="refresh" onclick="{{grid.javascriptObject}}.load(); return false;" class="pull-left btn btn-warning btn-sm"><i class="glyphicon glyphicon-refresh"></i></button>
         <div id="number-in-page" class="pull-left">
             Rows: <strong>{{count}}</strong>
         </div>
