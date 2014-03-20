@@ -10,13 +10,14 @@ use Widget\RenderInterface;
  *
  * It contains items:
  *  - elements implements RendererInterface
- *  - buttons  extends Widget\Grid\Toolbar\Button
- *  - actions  extends Widget\Grid\Toolbar\Action
+ *  - buttons  implements RendererInterface extends Widget\Grid\Toolbar\Button
  *
  * @author Drozd Igor <drozd.igor@gmail.com>
  */
 class Toolbar extends AbstractRenderer
 {
+    const SERVICE_CONTAINER = 99999;
+
     /**
      * @var \Widget\Grid\Grid
      */
@@ -31,11 +32,6 @@ class Toolbar extends AbstractRenderer
      * @var \Widget\RenderInterface[]
      */
     protected $elements = array();
-
-    /**
-     * @var Action[]
-     */
-    protected $actions = array();
 
     /**
      * {@inheritdoc}
@@ -106,48 +102,6 @@ class Toolbar extends AbstractRenderer
     }
 
     /**
-     * @return Action[]
-     */
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    /**
-     * @param Action[] $actions
-     *
-     * @return Toolbar
-     */
-    public function setActions($actions)
-    {
-        $this->actions = array();
-        foreach ($actions as &$action) {
-            $this->addAction($action);
-        }
-
-        return $this;
-    }
-
-    /**
-     * $action = new Action();
-     * $action -> setName('remove');
-     * $action -> setName('title', 'Удалить');
-     * $action -> setHandler('core.popup.show("popup-copyright","/shop/catalog/copyright/describe", {params : {products : selected}, modal : true})');
-     * ...
-     * $toolbar -> addAction($action);
-     *
-     * @param Action $action
-     *
-     * @return Toolbar
-     */
-    public function addAction(Action $action)
-    {
-        $this->actions[$action->getName()] = $action;
-
-        return $this;
-    }
-
-    /**
      * @return RenderInterface[]
      */
     public function getButtons()
@@ -157,14 +111,15 @@ class Toolbar extends AbstractRenderer
 
     /**
      * @param RenderInterface[] $buttons
+     * @param string            $container
      *
-     * @return Toolbar
+     * @return $this
      */
-    public function setButtons($buttons)
+    public function setButtons($buttons, $container = 0)
     {
-        $this->buttons = array();
+        $this->buttons[$container] = array();
         foreach ($buttons as &$button) {
-            $this->addButton($button);
+            $this->addButton($button, $container);
         }
 
         return $this;
@@ -181,17 +136,21 @@ class Toolbar extends AbstractRenderer
      * </code>
      *
      * @param RenderInterface $button
+     * @param string          $container
      * @param int             $position
      *
      * @return #this
      */
-    public function addButton(RenderInterface $button, $position = null)
+    public function addButton(RenderInterface $button, $container = 0, $position = null)
     {
         if ($position === null) {
-            $this->buttons[] = $button;
+            $this->buttons[$container][] = $button;
         } else {
-            array_splice($this->buttons, $position, null, array($button));
+            array_splice($this->buttons[$container], $position, null, array($button));
         }
+
+        //sort
+        ksort($this->buttons);
 
         return $this;
     }

@@ -3,6 +3,7 @@ namespace Widget\Grid\Extension;
 
 use Widget\AbstractExtension;
 use Widget\Grid\Toolbar\Button;
+use Widget\Grid\Toolbar\Toolbar;
 use Widget\ObserverListener;
 
 /**
@@ -37,7 +38,7 @@ class Columns extends AbstractExtension
             $button->setHint('Configure columns');
             $button->setIcon('th-list');
             $button->setCallback("$('#grid-extension-columns').modal()");
-            $toolbar->addButton($button);
+            $toolbar->addButton($button, Toolbar::SERVICE_CONTAINER);
 
             $listener = new ObserverListener(function ($grid, &$content) {
                 $window = new ColumnsRenderer($grid);

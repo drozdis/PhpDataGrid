@@ -11,27 +11,15 @@
         </div>
 
         <div class="pull-right">
-            {#actions#}
-            {% if element.actions %}
-                <div class="pull-left">
-                    Actions:&nbsp;
-                    {#$html .= '<select class="additionally" style="margin-right: 10px; max-width:150px;" name="' . $this->getGrid()->getName() . '_action">';#}
-                        {#$html .= '<option></option>';#}
-                        {#foreach ($actions as $key => &$action) {#}
-                        {#$html .= '<option value="' . $key . '" data-json="' . $action->toJson() . '">' . $action->getTitle() . '</option>';#}
-                        {#}#}
-                        {#$html .= '</select>';#}
-                    {#$html .= '</div>';#}
-                </div>
-            {% endif %}
-
             {#buttons#}
             {% if element.buttons %}
-            <div class="btn-group pull-right">
-                {% for button in element.buttons %}
-                    {{button.render|raw}}
+                {% for container in element.buttons %}
+                    <div class="btn-group pull-left" style="margin-left: 10px;">
+                        {% for button in container %}
+                            {{button.render|raw}}
+                        {% endfor %}
+                    </div>
                 {% endfor %}
-            </div>
             {% endif %}
         </div>
     </div>

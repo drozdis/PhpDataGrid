@@ -34,14 +34,14 @@ class StandardToolbar extends Toolbar
             $button->setHint('Reset filters');
             $button->setCallback($this->getGrid()->getJavascriptObject() . '.load(\'' . $this->getGrid()->getUrl(array('filter' => false)) . '\'); return false;');
             $button->setIcon('retweet');
-            $this->addButton($button, 0);
+            $this->addButton($button, Toolbar::SERVICE_CONTAINER);
 
             $button = new Button();
             $button->setTitle('Filter');
             $button->setHint('Apply filter');
             $button->setCallback($this->getGrid()->getJavascriptObject() . '.doFilter(); return false;');
             $button->setIcon('filter');
-            $this->addButton($button, 0);
+            $this->addButton($button, Toolbar::SERVICE_CONTAINER);
         }
 
         return parent::render();

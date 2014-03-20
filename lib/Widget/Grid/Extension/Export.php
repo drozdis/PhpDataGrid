@@ -2,6 +2,7 @@
 namespace Widget\Grid\Extension;
 use Widget\AbstractExtension;
 use Widget\Grid\Toolbar\Button;
+use Widget\Grid\Toolbar\Toolbar;
 
 /**
  * Класc "Експорт таблицы в xls"
@@ -35,7 +36,7 @@ class Export extends AbstractExtension
         if ($toolbar = $this->getWidget()->getTopToolbar()) {
             $button = new Button();
             $button->setTitle('Excel');
-            $toolbar->addButton($button);
+            $toolbar->addButton($button, Toolbar::SERVICE_CONTAINER);
         }
     }
 

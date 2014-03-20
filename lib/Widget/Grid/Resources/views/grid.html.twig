@@ -43,6 +43,11 @@
 
 {% block colgroup %}
 <colgroup>
+    {#selection#}
+    {% if (element.selection == true) %}
+        <col width="20" class="a-center" />
+    {% endif %}
+
     {#columns#}
     {% for column in element.columns %}
         {% if (column.hidden == false) %}
@@ -60,6 +65,11 @@
 {% block header %}
     {#header#}
     <tr class="headings">
+        {#selection#}
+        {% if (element.selection == true) %}
+            <th><span class="nobr"><input type="checkbox" onclick="{{element.javascriptObject}}.checkAll(this);"/></span></th>
+        {% endif %}
+
         {#columns#}
         {% for column in element.columns %}
             {% if (column.hidden == false) %}
@@ -101,6 +111,12 @@
 
     {% if (filters == true) %}
         <tr class="filter">
+            {#selection#}
+            {% if (element.selection == true) %}
+                <td></td>
+            {% endif %}
+
+            {#columns#}
             {% for column in element.columns %}
                 {% if (column.hidden == false) %}
                     {% if (column.filter and column.filterable == true) %}
@@ -122,6 +138,11 @@
 {% block body %}
     {% for row in element.storage.data %}
         <tr data-identifier="{{element.storage.getId(row)}}">
+            {#selection#}
+            {% if (element.selection == true) %}
+                <td class="a-center"><input type="checkbox" data-role="selection" value="{{element.storage.getId(row)}}" /></td>
+            {% endif %}
+
             {#columns#}
             {% for column in element.columns %}
                 {% if (column.hidden == false) %}
