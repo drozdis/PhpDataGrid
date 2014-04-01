@@ -480,7 +480,7 @@ class Column extends AbstractRenderer
 
             $href = $href . (strpos($href, '?') === false ? '?' : '&') . 'return=' . urlencode($this->getGrid()->getUrl());
             //замена конструкций {{param}} на значение
-            if (preg_match_all('//{{([\d\w_]+)}}//', $href, $m)) {
+            if (preg_match_all('#{{([\d\w_]+)}}#', $href, $m)) {
                 foreach ($m[1] as $key) {
                     $href = str_replace('{{' . $key . '}}', isset($row[$key]) ? $row[$key] : '', $href);
                 }
