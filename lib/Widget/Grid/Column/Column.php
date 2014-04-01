@@ -482,7 +482,7 @@ class Column extends AbstractRenderer
             //замена конструкций {{param}} на значение
             if (preg_match_all('#{{([\d\w_]+)}}#', $href, $m)) {
                 foreach ($m[1] as $key) {
-                    $href = str_replace('{{' . $key . '}}', isset($row[$key]) ? $row[$key] : '', $href);
+                    $href = str_replace('{{' . $key . '}}', $this->getValueFromRow($this->getData(), $key), $href);
                 }
             }
             $value = '<a ' . ($target ? 'target="' . $target . '"' : '') . ' href="' . $href . '">' . $value . '</a>';
