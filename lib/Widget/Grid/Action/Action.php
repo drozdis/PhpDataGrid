@@ -1,5 +1,6 @@
 <?php
 namespace Widget\Grid\Action;
+
 use Widget\AbstractWidget;
 use Widget\Helper;
 
@@ -13,32 +14,37 @@ class Action extends AbstractWidget
     /**
      * @var string
      */
-    protected $title = '';
+    private $title = '';
 
     /**
      * @var string
      */
-    protected $hint = '';
+    private $hint = '';
 
     /**
      * @var string
      */
-    protected $href = '';
+    private $href = '';
 
     /**
      * @var string
      */
-    protected $icon = '';
+    private $icon = '';
 
     /**
      * @var object|array
      */
-    protected $row;
+    private $row;
+
+    /**
+     * @var string
+     */
+    private $css;
 
     /**
      * @var \Widget\Grid\Grid
      */
-    protected $grid = null;
+    private $grid = null;
 
     /**
      * {@inheritdoc}
@@ -46,6 +52,26 @@ class Action extends AbstractWidget
     public function getTemplate()
     {
         return 'Action/action.html.twig';
+    }
+
+    /**
+     * @param string $css
+     *
+     * @return $this
+     */
+    public function setCss($css)
+    {
+        $this->css = $css;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCss()
+    {
+        return $this->css;
     }
 
     /**
@@ -83,9 +109,9 @@ class Action extends AbstractWidget
     {
         $href = $this->href;
         if (!$href) {
-            $arr = explode('?', str_replace('/view', '', $this->getGrid()->getBaseUrl()));
+            $arr    = explode('?', str_replace('/view', '', $this->getGrid()->getBaseUrl()));
             $arr[0] = rtrim($arr[0], '/') . '/' . $this->getName() . '/' . Helper::getValue($this->getCurrentRow(), $this->getGrid()->getStorage()->getIdField());
-            $href = join('?', $arr);
+            $href   = join('?', $arr);
         } else {
             if (preg_match_all('#{{([\d\w_]+)}}#', $href, $m)) {
                 foreach ($m[1] as $key) {
@@ -156,6 +182,7 @@ class Action extends AbstractWidget
 
     /**
      * @param object|array $row
+     *
      * @return Action
      */
     public function setData($row)

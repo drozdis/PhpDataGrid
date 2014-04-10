@@ -1,6 +1,6 @@
 {% block element %}
-    <a rel="nofollow" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="{{element.hint}}" href="{{element.href}}">
-        <i class="glyphicon glyphicon-{{element.icon}}"></i>
+    <a rel="nofollow" class="btn btn-xs {{element.css}}" data-toggle="tooltip" data-placement="top" title="{{element.hint}}" href="{{element.href}}">
+        <i class="{{element.icon}}"></i>
         {{element.title}}
     </a>
 {% endblock  element%}
