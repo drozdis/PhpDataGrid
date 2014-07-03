@@ -175,7 +175,12 @@ class Helper
             if (method_exists($row, $method)) {
                 return call_user_func(array($row, $method));
             } else {
-                return null;
+                $method = 'is' . self::normalizeMethod($key);
+                if (method_exists($row, $method)) {
+                    return call_user_func(array($row, $method));
+                } else {
+                    return null;
+                }
             }
         }
 
