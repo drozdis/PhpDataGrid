@@ -99,7 +99,7 @@ class PaginationRenderer extends AbstractRenderer
     /**
      * @param array $params
      *
-     * @return Paginator
+     * @return $this
      */
     public function setParams($params)
     {
@@ -112,7 +112,7 @@ class PaginationRenderer extends AbstractRenderer
      * К-во страниц в диапазоне
      * @param Integer $pageRange
      *
-     * @return Paginator
+     * @return $this
      */
     public function setPageRange($pageRange)
     {

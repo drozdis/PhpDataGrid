@@ -1,5 +1,5 @@
-{% include "column.html.twig" %}
+{% extends "Column/column.html.twig" %}
 
 {% block content %}
-    <img src="{{element.value}}"/>
+    <img src="{{element.value|raw}}"/>
 {% endblock content %}

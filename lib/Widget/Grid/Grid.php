@@ -722,7 +722,7 @@ class Grid extends AbstractWidget
             $separator = '&';
         }
         if (!empty($url)) {
-            $url = rtrim($this->getBaseUrl(), '/') . ($separator == '?' ? '/' . $separator : $separator) . join($this->uriDelimeter, $url);
+            $url = rtrim($this->getBaseUrl(), '/') . ($separator == '?' ? $separator : $separator) . join($this->uriDelimeter, $url);
         } else {
             $url = rtrim($this->getBaseUrl(), '/');
         }

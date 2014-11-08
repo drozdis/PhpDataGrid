@@ -1,6 +1,6 @@
 {
-    "name": "drozd/widget",
-    "version": "0.8",
+    "name": "igdr/widget",
+    "version": "1.0",
     "type": "library",
     "description": "Grid widget for PHP",
     "keywords": ["templating"],
@@ -16,8 +16,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Widget": "lib/",
-            "Widget\\Bundle": "widget-bundle"
+            "Igdr\\Widget": "lib/",
+            "Igdr\\Widget\\Bundle": "widget-bundle"
         }
     }
 }

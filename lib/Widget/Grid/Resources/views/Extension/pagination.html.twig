@@ -1,9 +1,7 @@
 {% block element %}
     {% macro renderHref(grid, href, class, number) %}
-        <li class="{{ class }}"><a onclick="{{ grid.jvascriptObject }}.load(this.href); return false;" href="{{ href ? href : 'javascript:void(0)' }}">{{ number }}</a></li>
+        <li class="{{ class }}"><a onclick="{{ grid.getJavascriptObject }}.load(this.href); return false;" href="{{ href ? href : 'javascript:void(0)' }}">{{ number }}</a></li>
     {% endmacro %}
-
-    {% set grid = element.grid %}
 
     {% if pageCount > 1 %}
         <div class="pagination-ct">

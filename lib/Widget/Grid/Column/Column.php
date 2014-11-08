@@ -25,18 +25,21 @@ class Column extends AbstractRenderer
 
     /**
      * Заголовок
+     *
      * @var string
      */
     protected $title = '';
 
     /**
      * Подсказка
+     *
      * @var string
      */
     protected $hint = '';
 
     /**
      * Ширина
+     *
      * @var string
      */
     protected $width = '';
@@ -55,24 +58,28 @@ class Column extends AbstractRenderer
 
     /**
      * Скрыть/Паказать колонку
+     *
      * @var Boolean
      */
     protected $hidden = false;
 
     /**
      * Вкл/Выкл сортировки
+     *
      * @var string
      */
     protected $sortable = false;
 
     /**
      * Позиция
+     *
      * @var string
      */
     protected $position = null;
 
     /**
      * Ссылка
+     *
      * @var string|array
      */
     protected $url = '';
@@ -99,6 +106,7 @@ class Column extends AbstractRenderer
 
     /**
      * Включен/Выключен фильтр
+     *
      * @var Boolean
      */
     protected $filterable = true;
@@ -110,9 +118,15 @@ class Column extends AbstractRenderer
 
     /**
      * Начальные настройки колонки
+     *
      * @var array
      */
     protected $options = array();
+
+    /**
+     * @var callable
+     */
+    protected $formater;
 
     /**
      * @param mixed $data
@@ -464,6 +478,26 @@ class Column extends AbstractRenderer
     }
 
     /**
+     * @param callable $formater
+     *
+     * @return $this
+     */
+    public function setFormater($formater)
+    {
+        $this->formater = $formater;
+
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getFormater()
+    {
+        return $this->formater;
+    }
+
+    /**
      * Get value of column
      *
      * @return string
@@ -472,6 +506,10 @@ class Column extends AbstractRenderer
     {
         //get value
         $value = $this->getValueFromRow($this->getData(), $this->dataIndex);
+
+        if ($this->formater) {
+            $value = call_user_func_array($this->formater, [$value, $this->getData(), $this->dataIndex]);
+        }
 
         //render link
         if ($url = $this->getUrl()) {
@@ -495,6 +533,7 @@ class Column extends AbstractRenderer
      * Get value of column
      *
      * @param array|object $row
+     * @param string       $key
      *
      * @return string
      */

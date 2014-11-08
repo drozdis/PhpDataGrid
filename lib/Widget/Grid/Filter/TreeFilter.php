@@ -1,6 +1,8 @@
 <?php
 namespace Widget\Grid\Filter;
 
+use Widget\Helper;
+
 /**
  * Клас фильтра колонки (Дерево)
  *
@@ -64,8 +66,8 @@ class TreeFilter extends SelectFilter
     public function render()
     {
         $column = $this->getColumn()->getName();
-        $grid = $this->getGrid();
-        $tree = $this->getOptions();
+        $grid   = $this->getGrid();
+        $tree   = $this->getOptions();
 
         $html = '<div class="field-100">';
         $html .= '<select class="form-control" name="' . $column . '" onchange="' . $grid->getJavascriptObject() . '.doFilter();">';
@@ -91,10 +93,10 @@ class TreeFilter extends SelectFilter
         foreach ($tree as $child) {
             $style = '';
             if (!empty($child['child'])) {
-                $style = 'style="color://000;"';
+                $style = 'style="color:#000;"';
             }
 
-            $html .= '<option ' . $style . ' ' . ($this->getValue() == $child['data'][$this->idField] ? 'selected="selected"' : '') . ' value="' . $child['data'][$this->idField] . '">' . str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $level) . $child['data'][$this->titleField] . '</option>';
+            $html .= '<option ' . $style . ' ' . ($this->getValue() == Helper::getValue($child['data'], $this->idField) ? 'selected="selected"' : '') . ' value="' . Helper::getValue($child['data'], $this->idField) . '">' . str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $level) . Helper::getValue($child['data'], $this->titleField) . '</option>';
             if (!empty($child['child'])) {
                 $html .= $this->createTree($child['child'], $level + 1);
             }
