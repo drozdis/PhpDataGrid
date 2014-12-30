@@ -1,7 +1,6 @@
 <?php
 namespace Widget\Bundle\Grid\Type;
 
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Translation\TranslatorInterface;
 use Widget\Grid\AbstractType;
 

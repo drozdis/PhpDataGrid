@@ -1,7 +1,7 @@
 <?php
 namespace Widget\Bundle\Grid;
 
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Widget\Bundle\Grid\Type\AbstractSymfonyType;
 use Widget\Grid\Grid;
 use Widget\Grid\GridBuilder;
@@ -13,7 +13,7 @@ use Widget\Grid\GridFactory;
 class Factory
 {
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     private $translator;
 
@@ -42,9 +42,9 @@ class Factory
     }
 
     /**
-     * @param Translator $translator
+     * @param TranslatorInterface $translator
      */
-    public function setTranslator(Translator $translator)
+    public function setTranslator(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
