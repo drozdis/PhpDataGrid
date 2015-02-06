@@ -1,48 +1,51 @@
 <?php
 namespace Widget\Grid\Storage;
 
+use Igdr\Bundle\ManagerBundle\Manager\ManagerInterface;
+
 /**
  * The storage that provide a loading data dynamically from model
  */
-class ModelStorage extends AbstractStorage
+class ManagerStorage extends ManagerInterface
 {
     /**
-     * @var ModelStorageInterface
+     * @var ManagerInterface
      */
-    protected $model = null;
+    protected $manager = null;
 
     /**
      * Использовать selWhere модели или нет
+     *
      * @var Boolean
      */
     protected $where = true;
 
     /**
-     * Установка модели
-     * @param ModelStorageInterface $model
+     * @param ManagerInterface $manager
      *
-     * @return ModelStorage
+     * @return $this
      */
-    public function setModel(ModelStorageInterface $model)
+    public function setManager($manager)
     {
-        $this->model = $model;
+        $this->manager = $manager;
 
         return $this;
     }
 
     /**
      * Получение модели
-     * @return ModelStorageInterface
+     *
+     * @return $this
      */
-    public function getModel()
+    public function getManager()
     {
-        return $this->model;
+        return $this->manager;
     }
 
     /**
      * @param array $where
      *
-     * @return ModelStorage
+     * @return ManagerStorage
      */
     public function setWhere($where)
     {
@@ -53,11 +56,12 @@ class ModelStorage extends AbstractStorage
 
     /**
      * Get field of data that is identifier
+     *
      * @return string
      */
     public function getIdField()
     {
-        return !empty($this->idField) ? $this->idField : $this->getModel()->getIdField();
+        return !empty($this->idField) ? $this->idField : $this->getManager()->getIdField();
     }
 
     /**
@@ -68,9 +72,8 @@ class ModelStorage extends AbstractStorage
         //Генерация события предзагрузки
         $this->fireEvent('before_load', array('storage' => $this));
 
-        $model = $this->getModel();
-        $model->selColumns();
-        $this->where && $model->selWhere();
+        $model = $this->getManager();
+        $this->where && $model->where();
 
         //сортировка, фильтрация
         $this->filter()->order();
@@ -103,14 +106,14 @@ class ModelStorage extends AbstractStorage
     public function order()
     {
         foreach ($this->orders as $name => $dir) {
-            $arr = explode('.', $name);
+            $arr       = explode('.', $name);
             $clearName = array_pop($arr);
 
             $method = '_order' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($clearName));
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $dir);
             } else {
-                $this->getModel()->selOrder(array($name => $dir));
+                $this->getManager()->selOrder(array($name => $dir));
             }
         }
 
@@ -127,7 +130,7 @@ class ModelStorage extends AbstractStorage
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $filter['value']);
             } else {
-                $this->getModel()->filter($filter['field'], $filter['operation'], $filter['value'], $filter['function']);
+                $this->getManager()->filter($filter['field'], $filter['operation'], $filter['value'], $filter['function']);
             }
         }
 
@@ -139,7 +142,7 @@ class ModelStorage extends AbstractStorage
      */
     public function getTotal()
     {
-        return $this->getModel()->count();
+        return $this->getManager()->count();
     }
 
     /**
@@ -147,6 +150,6 @@ class ModelStorage extends AbstractStorage
      */
     public function __clone()
     {
-        $this->model = clone $this->model;
+        $this->manager = clone $this->manager;
     }
 }
