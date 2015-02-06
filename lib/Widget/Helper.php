@@ -138,7 +138,7 @@ class Helper
     {
         try {
             $params = self::arrayMap('urldecode', (array) json_decode(base64_decode($hash), true));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $params = array();
         }
         if ($name !== null) {

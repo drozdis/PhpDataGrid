@@ -2,11 +2,12 @@
 namespace Widget\Grid\Storage;
 
 use Igdr\Bundle\ManagerBundle\Manager\ManagerInterface;
+use Widget\Helper;
 
 /**
  * The storage that provide a loading data dynamically from model
  */
-class ManagerStorage extends ManagerInterface
+class ManagerStorage extends AbstractStorage
 {
     /**
      * @var ManagerInterface
@@ -14,8 +15,6 @@ class ManagerStorage extends ManagerInterface
     protected $manager = null;
 
     /**
-     * Использовать selWhere модели или нет
-     *
      * @var Boolean
      */
     protected $where = true;
@@ -25,7 +24,7 @@ class ManagerStorage extends ManagerInterface
      *
      * @return $this
      */
-    public function setManager($manager)
+    public function setManager(ManagerInterface $manager)
     {
         $this->manager = $manager;
 
@@ -33,9 +32,7 @@ class ManagerStorage extends ManagerInterface
     }
 
     /**
-     * Получение модели
-     *
-     * @return $this
+     * @return ManagerInterface
      */
     public function getManager()
     {
@@ -45,7 +42,7 @@ class ManagerStorage extends ManagerInterface
     /**
      * @param array $where
      *
-     * @return ManagerStorage
+     * @return $this
      */
     public function setWhere($where)
     {
@@ -105,15 +102,15 @@ class ManagerStorage extends ManagerInterface
      */
     public function order()
     {
+        $manager = $this->getManager();
         foreach ($this->orders as $name => $dir) {
             $arr       = explode('.', $name);
             $clearName = array_pop($arr);
-
-            $method = '_order' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($clearName));
-            if (method_exists($this, $method)) {
-                call_user_func(array($this, $method), $dir);
+            $method    = 'order' . Helper::normalizeMethod($clearName);
+            if (method_exists($manager, $method)) {
+                call_user_func(array($manager, $method), $dir);
             } else {
-                $this->getManager()->selOrder(array($name => $dir));
+                $manager->order(array($name => $dir));
             }
         }
 
@@ -125,12 +122,13 @@ class ManagerStorage extends ManagerInterface
      */
     public function filter()
     {
+        $manager = $this->getManager();
         foreach ($this->filters as $filter) {
-            $method = '_filter' . preg_replace("#_([\w])#e", "ucfirst('\\1')", ucfirst($filter['name']));
-            if (method_exists($this, $method)) {
-                call_user_func(array($this, $method), $filter['value']);
+            $method = 'filter' . Helper::normalizeMethod($filter['name']);
+            if (method_exists($manager, $method)) {
+                call_user_func(array($manager, $method), $filter['value']);
             } else {
-                $this->getManager()->filter($filter['field'], $filter['operation'], $filter['value'], $filter['function']);
+                $this->filterQuery($this->getManager()->getQuery(), $filter['field'], $filter['operation'], $filter['value'], $filter['function']);
             }
         }
 
@@ -143,6 +141,30 @@ class ManagerStorage extends ManagerInterface
     public function getTotal()
     {
         return $this->getManager()->count();
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param string                     $field
+     * @param string                     $operation
+     * @param string                     $data
+     *
+     * @return $this
+     */
+    protected function filterQuery(\Doctrine\ORM\QueryBuilder $queryBuilder, $field, $operation, $data)
+    {
+        static $i = 1;
+
+        if (strpos($field, '.') === false) {
+            $field = 'e.' . Helper::normalizeKey($field);
+        }
+        $var       = 'f' . ($i++);
+        $operation = str_replace('?', ':' . $var, $operation);
+
+        $queryBuilder->andWhere($field . ' ' . $operation);
+        $queryBuilder->setParameter($var, $data);
+
+        return $this;
     }
 
     /**

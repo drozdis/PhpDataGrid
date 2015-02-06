@@ -26,19 +26,27 @@ abstract class AbstractFilter extends AbstractRenderer
     protected $type = 'string';
 
     /**
+     * @var string
+     */
+    protected $strict = false;
+
+    /**
      * Колонка БД по которой необходимо фильтровать
+     *
      * @var string
      */
     protected $field = '';
 
     /**
      * Значение фильтра
+     *
      * @var Mixed
      */
     protected $value = '';
 
     /**
      * Сохранять состояние фильтра или нет
+     *
      * @var Boolean
      */
     protected $state = false;
@@ -61,6 +69,26 @@ abstract class AbstractFilter extends AbstractRenderer
         $this->state = $state;
 
         return $this;
+    }
+
+    /**
+     * @param string $strict
+     *
+     * @return $this
+     */
+    public function setStrict($strict)
+    {
+        $this->strict = $strict;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function isStrict()
+    {
+        return $this->strict;
     }
 
     /**
@@ -180,7 +208,11 @@ abstract class AbstractFilter extends AbstractRenderer
                 default:
                     $arr = explode(' ', trim($value));
                     foreach ($arr as &$row) {
-                        $store->addFilter($this->getColumn()->getName(), $this->getField(), '%' . $row . '%', 'LIKE LOWER(?)', 'LOWER');
+                        if ($this->strict === true) {
+                            $store->addFilter($this->getColumn()->getName(), $this->getField(), $row);
+                        } else {
+                            $store->addFilter($this->getColumn()->getName(), $this->getField(), '%' . $row . '%', 'LIKE LOWER(?)', 'LOWER');
+                        }
                     }
                     break;
             }

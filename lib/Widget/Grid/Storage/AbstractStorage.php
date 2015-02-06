@@ -14,48 +14,56 @@ abstract class AbstractStorage extends ObserverAbstract
 {
     /**
      * Поле идентификатора данных
+     *
      * @var string
      */
     protected $idField = '';
 
     /**
      * Данные
+     *
      * @var string
      */
     protected $data = array();
 
     /**
      * Список фильтров
+     *
      * @var array (field, value, operation)
      */
     protected $filters = array();
 
     /**
      * Список сортировок
+     *
      * @var array
      */
     protected $orders = array();
 
     /**
      * Список сортировок по умолчанию
+     *
      * @var array
      */
     protected $defaultOrders = array();
 
     /**
      * К-во выбранных записей
+     *
      * @var Integer
      */
     protected $count = 0;
 
     /**
      * К-во на странице
+     *
      * @var Integer
      */
     protected $onPage = 100000000;
 
     /**
      * Текущая страница
+     *
      * @var Integer
      */
     protected $page = 1;
@@ -282,18 +290,21 @@ abstract class AbstractStorage extends ObserverAbstract
 
     /**
      * Сортировка данных
+     *
      * @return AbstractStorage
      */
     abstract public function order();
 
     /**
      * Фильтрация данных
+     *
      * @return AbstractStorage
      */
     abstract public function filter();
 
     /**
      * Загрузка данных
+     *
      * @param $limit |Null К-во записей выборки
      *
      * @return AbstractStorage
@@ -302,6 +313,7 @@ abstract class AbstractStorage extends ObserverAbstract
 
     /**
      * Общее к-во записей
+     *
      * @return AbstractStorage
      */
     abstract public function getTotal();
