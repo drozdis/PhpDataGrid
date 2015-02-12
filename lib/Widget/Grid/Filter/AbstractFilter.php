@@ -206,13 +206,10 @@ abstract class AbstractFilter extends AbstractRenderer
                     break;
 
                 default:
-                    $arr = explode(' ', trim($value));
-                    foreach ($arr as &$row) {
-                        if ($this->strict === true) {
-                            $store->addFilter($this->getColumn()->getName(), $this->getField(), $row);
-                        } else {
-                            $store->addFilter($this->getColumn()->getName(), $this->getField(), '%' . $row . '%', 'LIKE LOWER(?)', 'LOWER');
-                        }
+                    if ($this->strict === true) {
+                        $store->addFilter($this->getColumn()->getName(), $this->getField(), $value);
+                    } else {
+                        $store->addFilter($this->getColumn()->getName(), $this->getField(), '%' . $value . '%', 'LIKE LOWER(?)', 'LOWER');
                     }
                     break;
             }

@@ -285,7 +285,7 @@ abstract class AbstractStorage extends ObserverAbstract
      */
     public function getId($row)
     {
-        return \Widget\Helper::getValue($row, $this->idField);
+        return \Widget\Helper::getValue($row, $this->getIdField());
     }
 
     /**

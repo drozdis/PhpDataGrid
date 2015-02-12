@@ -11,8 +11,17 @@
         </div>
 
         <div class="pull-right">
+            {#actions#}
+            {% if element.actions|length > 0 %}
+                <select class="pull-left" style="margin-left: 10px;">
+                    {% for action in element.actions %}
+                        {{action.render|raw}}
+                    {% endfor %}
+                </select>
+            {% endif %}
+
             {#buttons#}
-            {% if element.buttons %}
+            {% if element.buttons|length > 0 %}
                 {% for container in element.buttons %}
                     <div class="btn-group pull-left" style="margin-left: 10px;">
                         {% for button in container %}

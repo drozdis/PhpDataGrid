@@ -29,6 +29,11 @@ class Toolbar extends AbstractRenderer
     protected $buttons = array();
 
     /**
+     * @var RenderInterface[]
+     */
+    protected $actions = array();
+
+    /**
      * @var \Widget\RenderInterface[]
      */
     protected $elements = array();
@@ -139,7 +144,7 @@ class Toolbar extends AbstractRenderer
      * @param string          $container
      * @param int             $position
      *
-     * @return #this
+     * @return $this
      */
     public function addButton(RenderInterface $button, $container = 0, $position = null)
     {
@@ -153,5 +158,43 @@ class Toolbar extends AbstractRenderer
         ksort($this->buttons);
 
         return $this;
+    }
+
+    /**
+     * <code>
+     *   $button = new ACtion();
+     *   $button->setTitle('Filter');
+     *   $button->setHint('Apply filter');
+     *   $button->setCallback($this->getGrid()->getJavascriptObject() . '.doFilter(); return false;');
+     *   $button->setIcon('filter');
+     *   $this->addAction($button);
+     * </code>
+     *
+     * @param RenderInterface $action
+     * @param string          $container
+     * @param int             $position
+     *
+     * @return $this
+     */
+    public function addAction(RenderInterface $action, $position = null)
+    {
+        if ($position === null) {
+            $this->actions[] = $action;
+        } else {
+            array_splice($this->actions, $position, null, array($action));
+        }
+
+        //sort
+        ksort($this->actions);
+
+        return $this;
+    }
+
+    /**
+     * @return \Widget\RenderInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
     }
 }
