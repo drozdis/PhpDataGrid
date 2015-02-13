@@ -1,6 +1,6 @@
 {% block element %}
-    <a rel="nofollow" class="btn btn-xs {{element.css}}" data-toggle="tooltip" data-placement="top" title="{{element.hint}}" href="{{element.href}}">
-        <i class="{{element.icon}}"></i>
-        {{element.title}}
+    <a data-grid-role="{{ element.name }}" {% for attrname, attrvalue in element.attributes %} {{ attrname }}="{{ attrvalue }}"{% endfor %} rel="nofollow" class="btn btn-xs {{ element.css }}" data-toggle="tooltip" data-placement="top" title="{{ element.hint }}" href="{{ element.href }}">
+    <i class="{{ element.icon }}"></i>
+    {{ element.title }}
     </a>
-{% endblock  element%}
+{% endblock  element %}

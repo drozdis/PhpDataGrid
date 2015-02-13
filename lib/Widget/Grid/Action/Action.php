@@ -47,6 +47,16 @@ class Action extends AbstractWidget
     private $grid = null;
 
     /**
+     * @var array
+     */
+    private $attributes;
+
+    /**
+     * @var boolean
+     */
+    private $main;
+
+    /**
      * {@inheritdoc}
      */
     public function getTemplate()
@@ -190,6 +200,46 @@ class Action extends AbstractWidget
         $this->row = $row;
 
         return $this;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return $this
+     */
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param boolean $main
+     *
+     * @return $this
+     */
+    public function setMain($main)
+    {
+        $this->main = $main;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMain()
+    {
+        return $this->main;
     }
 
     /**
