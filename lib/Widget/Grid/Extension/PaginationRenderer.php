@@ -1,9 +1,9 @@
 <?php
 namespace Widget\Grid\Extension;
 
+use Widget\AbstractRenderer;
 use Widget\Grid\Storage\AbstractStorage;
 use Widget\Helper;
-use Widget\AbstractRenderer;
 
 /**
  * Class Paginator
@@ -14,6 +14,7 @@ class PaginationRenderer extends AbstractRenderer
 {
     /**
      * Максимальное к-во на странице
+     *
      * @var string
      */
     const MAX_ON_PAGE = 200;
@@ -25,42 +26,49 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * Элементов на странице
+     *
      * @var Integer
      */
     protected $onPage = 24;
 
     /**
      * Номер текущей страници
+     *
      * @var Integer
      */
     protected $page = 1;
 
     /**
      * Страниц в диапазоне
+     *
      * @var Integer
      */
     protected $pageRange = 5;
 
     /**
      * Страниц
+     *
      * @var Integer
      */
     protected $pageCount = 0;
 
     /**
      * Список страниц
+     *
      * @var array
      */
     protected $pages = null;
 
     /**
      * Список доп параметров, которые будут передаватся в шаблон
+     *
      * @var array
      */
     protected $params = array();
 
     /**
      * Пареметр
+     *
      * @var string
      */
     protected $pageKey = 'page';
@@ -110,6 +118,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * К-во страниц в диапазоне
+     *
      * @param Integer $pageRange
      *
      * @return $this
@@ -123,6 +132,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * Текущий номер страницы
+     *
      * @return Integer
      */
     public function getPage()
@@ -132,9 +142,10 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * Текущий номер страницы
+     *
      * @param Integer $page
      *
-     * @return Paginator
+     * @return $this
      */
     public function setPage($page)
     {
@@ -145,15 +156,24 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * Базовый урл
+     *
      * @param string $url
      *
-     * @return Paginator
+     * @return $this
      */
     public function setUrl($url)
     {
         $this->url = $url;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->url;
     }
 
     /**
@@ -168,6 +188,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * К-во элементов
+     *
      * @return integer
      */
     public function getCount()
@@ -181,9 +202,10 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * К-во на странице
+     *
      * @param Integer $onPage
      *
-     * @return Paginator
+     * @return $this
      */
     public function setOnPage($onPage)
     {
@@ -194,6 +216,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * К-во на странице
+     *
      * @return integer
      */
     public function getOnPage()
@@ -203,6 +226,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * Получение списка элементов
+     *
      * @param integer $pageNumber
      *
      * @return array
@@ -255,6 +279,7 @@ class PaginationRenderer extends AbstractRenderer
 
     /**
      * К-во страниц
+     *
      * @return Integer
      */
     protected function calculatePageCount()
@@ -342,7 +367,7 @@ class PaginationRenderer extends AbstractRenderer
     /**
      * Returns the page collection.
      *
-     * @return Paginator
+     * @return $this
      */
     public function generatePages()
     {
