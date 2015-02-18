@@ -29,7 +29,12 @@ class PaginationRenderer extends AbstractRenderer
      *
      * @var Integer
      */
-    protected $onPage = 24;
+    protected $onPage = 20;
+
+    /**
+     * @var array
+     */
+    protected $onPageList = array(20, 50, 100, 200);
 
     /**
      * Номер текущей страници
@@ -222,6 +227,26 @@ class PaginationRenderer extends AbstractRenderer
     public function getOnPage()
     {
         return $this->onPage;
+    }
+
+    /**
+     * @param array $onPageList
+     *
+     * @return $this
+     */
+    public function setOnPageList($onPageList)
+    {
+        $this->onPageList = $onPageList;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOnPageList()
+    {
+        return $this->onPageList;
     }
 
     /**

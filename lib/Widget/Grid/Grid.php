@@ -704,13 +704,12 @@ class Grid extends AbstractWidget
         }
 
         //?-?? ?? ????????
-//		if ($this->getTopToolbar() && $this->getTopToolbar()->getPaginator()) {
-//			$onpage = $this->getTopToolbar()->getPaginator()->getOnPage();
-//			if (!empty($mixer['onpage'])) {
-//				$onpage = $mixer['onpage'];
-//			}
-//			$onpage && $url[] = $this->urlValue('onpage', $onpage);
-//		}
+        if (!empty($mixer['onpage'])) {
+            $onpage = $mixer['onpage'];
+        } else {
+            $onpage = $this->getStorage()->getOnPage();
+        }
+        $url[] = $this->urlValue('onpage', $onpage);
 
         //????????
         $page = 1;

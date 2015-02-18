@@ -3,14 +3,14 @@
         <li class="{{ class }}"><a onclick="{{ grid.getJavascriptObject }}.load(this.href); return false;" href="{{ href ? href : 'javascript:void(0)' }}">{{ number }}</a></li>
     {% endmacro %}
 
-    {#<div class="pull-left" style="line-height:28px;">На странице:#}
-        {#<select class="span1 additionally" name="onpage" onchange="ProductsGridWidget.load($(this).val()); return false;">#}
-            {#<option value="{{ element.baseUrl }}?" selected="selected">25</option>#}
-            {#<option value="{{ element.baseUrl }}">25</option>#}
-            {#<option value="{{ element.baseUrl }}">25</option>#}
-            {#<option value="{{ element.baseUrl }}">25</option>#}
-        {#</select>#}
-    {#</div>#}
+    <div class="pull-left" style="margin-left: 20px; line-height:28px;">
+        On page:
+        <select class="span1 additionally" name="onpage" onchange="{{ grid.getJavascriptObject }}.load($(this).val()); return false;">
+            {% for value in element.onPageList %}
+            <option value="{{ grid.url({onpage: value}) }}" {{ element.onPage == value ? 'selected=selected':'' }}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
     {% if pageCount > 1 %}
         <div class="pagination-ct">
