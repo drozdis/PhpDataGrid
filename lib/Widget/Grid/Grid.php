@@ -285,6 +285,9 @@ class Grid extends AbstractWidget
             $this->applyFilter($filter);
         }
 
+        //apply parmas
+        $this->applyExternalParams();
+
         //инициализация состояния таблицы
         $this->applyState();
 
@@ -840,12 +843,21 @@ class Grid extends AbstractWidget
     public function setParams($params)
     {
         $this->params = $params;
-        foreach ((array) $this->params as $key => $vlaue) {
-            $method = 'set' . Helper::normalizeMethod($key);
-            if (method_exists($this, $method)) {
-                call_user_func(array($this, $method), $vlaue);
+    }
+
+    /**
+     * @return $this
+     */
+    public function applyExternalParams()
+    {
+        $grid     = $this;
+        $params   = $this->params;
+        $listener = new ObserverListener(function () use ($params, $grid) {
+            foreach ($params as $name => $value) {
+                $grid->getStorage()->addFilter($name, $name, $value);
             }
-        }
+        });
+        $this->getStorage()->addEventListener('before_load', $listener);
 
         return $this;
     }
