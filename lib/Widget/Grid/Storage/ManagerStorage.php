@@ -156,7 +156,7 @@ class ManagerStorage extends AbstractStorage
         static $i = 1;
 
         if (strpos($field, '.') === false) {
-            $field = 'e.' . Helper::normalizeKey($field);
+            $field = 'e.' . $field;
         }
         $var       = 'f' . ($i++);
         $operation = str_replace('?', ':' . $var, $operation);
