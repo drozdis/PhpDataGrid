@@ -2,7 +2,7 @@ services:
     widget_grid_factory:
         class: Widget\Bundle\Grid\Factory
         calls:
-            - [setTranslator, [@translator]]
+            - [setTranslator, ["@translator"]]
 
     widget_twig_extension:
         class: Widget\Bundle\Twig\RequestExtension
